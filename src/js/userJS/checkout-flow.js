@@ -264,7 +264,8 @@ const submitOrder = async () => {
     customer: {
       fullName: fullName.value.trim(),
       phone: phone.value.trim(),
-      email: email.value.trim()
+      email: email.value.trim(),
+      note: noteInput.value.trim() || "Không có"
     },
     receiveMethod: receiveStore.checked ? "Nhận tại cửa hàng" : "Giao hàng tận nơi",
     store: document.getElementById("storeSelect")?.value || "",

@@ -118,7 +118,7 @@ export const renderDanhSachSP = (danhSachSP) => {
       <tr class="hover:bg-slate-50 border-b border-slate-100 transition-all">
         <td class="py-4 px-6 text-slate-500 font-medium">${phone.id}</td>
         <td class="py-4 px-6 font-bold text-slate-800">${phone.name}</td>
-        <td class="py-4 px-6 text-right text-emerald-600 font-bold">${formatCurrency(phone.price)}</td>
+        <td class="py-4 px-6 text-right text-emerald-600 font-bold whitespace-nowrap">${formatCurrency(phone.price)}</td>
         <td class="py-4 px-6 text-center font-bold">${phone.quantity || 0}</td>
         <td class="py-4 px-6">
           <span class="bg-slate-100 px-2 py-1 rounded text-[10px] font-bold uppercase text-slate-600">

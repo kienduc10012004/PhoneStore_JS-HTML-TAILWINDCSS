@@ -49,11 +49,17 @@
               Đăng nhập | Đăng kí
             </a>
 
-            <div class="userProfileMobile w-full hidden relative">
-              <button class="avatarBtn flex items-center gap-2 border w-full justify-center bg-[#4850ed] text-white font-medium  p-3 rounded-2xl">
+            <div class="userProfileMobile group w-full hidden relative">
+              <button class="avatarBtn peer flex items-center
+                gap-2 border w-full justify-center bg-[#4850ed] text-white font-medium  p-3 rounded-2xl">
                 <i class="fa-solid fa-circle-user"></i>
                 <span class="usernameDisplay truncate">Tên User</span>
               </button>
+
+              <!-- tooltip tên đầy đủ -->
+              <div class="tooltip hover:opacity-100 opacity-0 peer-hover:opacity-100 absolute top-full right-0 z-50 bg-slate-900 text-white text-xs px-3 py-2 rounded-xl shadow-xl whitespace-nowrap transition-opacity duration-150">
+                <span class="usernameDisplayHover">Tên User</span>
+              </div>
 
               <div class="dropdownMenu hidden absolute top-full flex flex-col md:flex-row left-[50%] translate-x-[-50%] bg-white border mt-2 p-2 w-full shadow-lg rounded-lg gap-3">
                 <button class="btnDangXuat block w-full text-left p-3 font-medium rounded-lg text-white bg-red-500 hover:bg-red-600 cursor-pointer duration-100 flex justify-center">Đăng xuất</button>
@@ -83,10 +89,10 @@
           <a href="./products.html" class="duration-100 hover:text-blue-600">Sản phẩm</a>
           <a href="./promotions.html" class="duration-100 hover:text-blue-600">Ưu đãi</a>
           <div class="relative group py-3">
-            <a href="./policies.html" class="duration-100 hover:text-blue-600 text-blue-400">Chính sách</a>
+            <a href="./policies.html" class="duration-100 hover:text-blue-600">Chính sách</a>
             <div class="absolute top-full left-0 w-60 bg-white border border-slate-100 rounded-2xl shadow-xl p-2 hidden group-hover:block">
               <a href="./policy-return.html" class="block px-4 py-3 rounded-xl hover:bg-slate-100 duration-100" >Chính sách đổi trả</a>
-              <a href="./policy-shipping.html" class="block px-4 py-3 rounded-xl hover:bg-slate-100 duration-100 text-blue-400">Chính sách giao hàng</a>
+              <a href="./policy-shipping.html" class="block px-4 py-3 rounded-xl hover:bg-slate-100 duration-100">Chính sách giao hàng</a>
               <a href="./policy-warranty.html" class="block px-4 py-3 rounded-xl hover:bg-slate-100 duration-100">Chính sách bảo hành</a>
             </div>
           </div>
@@ -114,11 +120,16 @@
             Đăng nhập | Đăng kí
           </a>
 
-          <div class="userProfileDesktop relative">
-            <button class="avatarBtn flex items-center cursor-pointer bg-[#4850ed] hover:bg-indigo-700 duration-100 gap-2 border p-3 text-white font-medium rounded-2xl">
+          <div class="userProfileDesktop group relative">
+            <button class="avatarBtn flex peer items-center cursor-pointer bg-[#4850ed] hover:bg-indigo-700 duration-100 gap-2 border p-3 text-white font-medium rounded-2xl">
               <i class="fa-solid fa-circle-user"></i>
               <span class="usernameDisplay truncate max-w-[80px]">Tên User</span>
             </button>
+
+            <!-- tooltip tên đầy đủ -->
+            <div class="tooltip hover:opacity-100 opacity-0 peer-hover:opacity-100 absolute top-full right-0 z-50 bg-slate-900 text-white text-xs px-3 py-2 rounded-xl shadow-xl whitespace-nowrap transition-opacity duration-150">
+              <span class="usernameDisplayHover">Tên User</span>
+            </div>
 
             <div class="dropdownMenu hidden flex flex-col gap-3 absolute rounded-lg top-full right-0 bg-white border mt-2 p-2 w-32 shadow-xl">
               <button class="btnDangXuat block w-full text-left bg-red-500 text-white font-medium cursor-pointer hover:bg-red-600 duration-100 rounded-lg p-3 flex justify-center">Đăng xuất</button>

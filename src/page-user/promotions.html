@@ -49,11 +49,17 @@
               Đăng nhập | Đăng kí
             </a>
 
-            <div class="userProfileMobile w-full hidden relative">
-              <button class="avatarBtn flex items-center gap-2 border w-full justify-center bg-[#4850ed] text-white font-medium  p-3 rounded-2xl">
+            <div class="userProfileMobile group w-full hidden relative">
+              <button class="avatarBtn peer flex items-center
+                gap-2 border w-full justify-center bg-[#4850ed] text-white font-medium  p-3 rounded-2xl">
                 <i class="fa-solid fa-circle-user"></i>
                 <span class="usernameDisplay truncate">Tên User</span>
               </button>
+
+              <!-- tooltip tên đầy đủ -->
+              <div class="tooltip hover:opacity-100 opacity-0 peer-hover:opacity-100 absolute top-full right-0 z-50 bg-slate-900 text-white text-xs px-3 py-2 rounded-xl shadow-xl whitespace-nowrap transition-opacity duration-150">
+                <span class="usernameDisplayHover">Tên User</span>
+              </div>
 
               <div class="dropdownMenu hidden absolute top-full flex flex-col md:flex-row left-[50%] translate-x-[-50%] bg-white border mt-2 p-2 w-full shadow-lg rounded-lg gap-3">
                 <button class="btnDangXuat block w-full text-left p-3 font-medium rounded-lg text-white bg-red-500 hover:bg-red-600 cursor-pointer duration-100 flex justify-center">Đăng xuất</button>
@@ -114,11 +120,16 @@
             Đăng nhập | Đăng kí
           </a>
 
-          <div class="userProfileDesktop relative">
-            <button class="avatarBtn flex items-center cursor-pointer bg-[#4850ed] hover:bg-indigo-700 duration-100 gap-2 border p-3 text-white font-medium rounded-2xl">
+          <div class="userProfileDesktop group relative">
+            <button class="avatarBtn flex peer items-center cursor-pointer bg-[#4850ed] hover:bg-indigo-700 duration-100 gap-2 border p-3 text-white font-medium rounded-2xl">
               <i class="fa-solid fa-circle-user"></i>
               <span class="usernameDisplay truncate max-w-[80px]">Tên User</span>
             </button>
+
+            <!-- tooltip tên đầy đủ -->
+            <div class="tooltip hover:opacity-100 opacity-0 peer-hover:opacity-100 absolute top-full right-0 z-50 bg-slate-900 text-white text-xs px-3 py-2 rounded-xl shadow-xl whitespace-nowrap transition-opacity duration-150">
+              <span class="usernameDisplayHover">Tên User</span>
+            </div>
 
             <div class="dropdownMenu hidden flex flex-col gap-3 absolute rounded-lg top-full right-0 bg-white border mt-2 p-2 w-32 shadow-xl">
               <button class="btnDangXuat block w-full text-left bg-red-500 text-white font-medium cursor-pointer hover:bg-red-600 duration-100 rounded-lg p-3 flex justify-center">Đăng xuất</button>
@@ -128,25 +139,28 @@
 
         </div>
       </div>
-    </header>
+    </header>>
     <!-- carousel -->
-    <section class="max-w-7xl mx-auto px-4 md:px-6 pt-8 relative overflow-hidden rounded-[2.5rem] bg-slate-950 text-white shadow-2xl shadow-slate-200">
-      <div class="min-w-full grid lg:grid-cols-2 gap-8 items-center p-8 md:p-16">
-        <div>
-          <span class="inline-flex mb-5 px-4 py-2 rounded-full bg-blue-500/15 text-blue-200 border border-blue-400/20 text-xs font-black uppercase tracking-widest">
-            Summer Sale
-          </span>
-          <h2 class="text-4xl md:text-6xl font-black leading-tight mb-5">
-            Nâng cấp smartphone, nhận ưu đãi cực lớn
-          </h2>
-          <p class="text-slate-300 text-lg max-w-xl mb-8">
-            Giảm đến 30%, hỗ trợ trả góp 0%, miễn phí giao hàng toàn quốc.
-          </p>
+    <section class="max-w-7xl mx-auto px-4 md:px-6 pt-8">
+      <div class="rounded-[2.5rem] bg-slate-950 text-white shadow-2xl shadow-slate-200">
+        <div class="min-w-full grid lg:grid-cols-2 gap-8 items-center p-8 md:p-16">
+          <div>
+            <span class="inline-flex mb-5 px-4 py-2 rounded-full bg-blue-500/15 text-blue-200 border border-blue-400/20 text-xs font-black uppercase tracking-widest">
+              Summer Sale
+            </span>
+            <h2 class="text-4xl md:text-6xl font-black leading-tight mb-5">
+              Nâng cấp smartphone, nhận ưu đãi cực lớn
+            </h2>
+            <p class="text-slate-300 text-lg max-w-xl mb-8">
+              Giảm đến 30%, hỗ trợ trả góp 0%, miễn phí giao hàng toàn quốc.
+            </p>
+          </div>
+          <div class="relative hidden lg:flex justify-center">
+            <div class="absolute w-80 h-80 bg-blue-500 rounded-full blur-[100px] opacity-30"></div>
+            <img src="../images/uudai.png" class="relative h-[420px] object-contain drop-shadow-2xl"/>
+          </div>
         </div>
-        <div class="relative hidden lg:flex justify-center">
-          <div class="absolute w-80 h-80 bg-blue-500 rounded-full blur-[100px] opacity-30"></div>
-          <img src="../images/uudai.png" class="relative h-[420px] object-contain drop-shadow-2xl"/>
-        </div>
+
       </div>
     </section>
     <!-- main -->

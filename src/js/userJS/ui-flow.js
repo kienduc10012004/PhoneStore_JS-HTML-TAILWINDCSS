@@ -40,10 +40,6 @@ export const capNhatWishlist = () => {
 };
 
 
-// export const capNhatWishlist = () => {
-//   if (el.badgeWishlist) el.badgeWishlist.textContent = state.wishlist.length;
-// };
-
 window.toggleWishlist = (id) => {
   const sp = state.danhSachSP.find(p => p.id == id);
   const strId = String(id);
@@ -57,8 +53,6 @@ window.toggleWishlist = (id) => {
   luuWishlist();
   capNhatWishlist();
 };
-
-
 
 
 export const initCarousel = () => {

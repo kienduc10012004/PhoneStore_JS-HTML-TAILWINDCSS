@@ -60,18 +60,10 @@ export const state = {
   editingProduct: null,
   currentPage: 1,
   itemsPerPage: 10,
-  // orders: JSON.parse(localStorage.getItem("KP_ORDERS")) || [],
   orders: [],
   users: JSON.parse(localStorage.getItem("KP_USERS")) || []
 };
 
-export const saveOrders = () => {
-  localStorage.setItem("KP_ORDERS", JSON.stringify(state.orders));
-};
-
-export const saveUsers = () => {
-  localStorage.setItem("KP_USERS", JSON.stringify(state.users));
-};
 
 export const formatCurrency = (value) => {
   return Number(value || 0).toLocaleString("vi-VN") + " đ";

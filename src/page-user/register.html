@@ -50,14 +50,15 @@
             </a>
 
             <div class="userProfileMobile group w-full hidden relative">
-              <button class="avatarBtn flex items-center gap-2 border w-full justify-center bg-[#4850ed] text-white font-medium  p-3 rounded-2xl">
+              <button class="avatarBtn peer flex items-center
+                gap-2 border w-full justify-center bg-[#4850ed] text-white font-medium  p-3 rounded-2xl">
                 <i class="fa-solid fa-circle-user"></i>
                 <span class="usernameDisplay truncate">Tên User</span>
               </button>
 
               <!-- tooltip tên đầy đủ -->
-              <div class="pointer-events-none invisible opacity-0 group-hover:visible group-hover:opacity-100 absolute top-full right-0 mt-2 z-50 bg-slate-900 text-white text-xs px-3 py-2 rounded-xl shadow-xl whitespace-nowrap transition-opacity duration-150">
-                <span class="usernameDisplay">Tên User</span>
+              <div class="tooltip hover:opacity-100 opacity-0 peer-hover:opacity-100 absolute top-full right-0 z-50 bg-slate-900 text-white text-xs px-3 py-2 rounded-xl shadow-xl whitespace-nowrap transition-opacity duration-150">
+                <span class="usernameDisplayHover">Tên User</span>
               </div>
 
               <div class="dropdownMenu hidden absolute top-full flex flex-col md:flex-row left-[50%] translate-x-[-50%] bg-white border mt-2 p-2 w-full shadow-lg rounded-lg gap-3">
@@ -120,15 +121,14 @@
           </a>
 
           <div class="userProfileDesktop group relative">
-            <button class="avatarBtn flex items-center cursor-pointer bg-[#4850ed] hover:bg-indigo-700 duration-100 gap-2 border p-3 text-white font-medium rounded-2xl">
+            <button class="avatarBtn flex peer items-center cursor-pointer bg-[#4850ed] hover:bg-indigo-700 duration-100 gap-2 border p-3 text-white font-medium rounded-2xl">
               <i class="fa-solid fa-circle-user"></i>
               <span class="usernameDisplay truncate max-w-[80px]">Tên User</span>
             </button>
 
-
             <!-- tooltip tên đầy đủ -->
-            <div class="pointer-events-none invisible opacity-0 group-hover:visible group-hover:opacity-100 absolute top-full right-0 mt-2 z-50 bg-slate-900 text-white text-xs px-3 py-2 rounded-xl shadow-xl whitespace-nowrap transition-opacity duration-150">
-              <span class="usernameDisplay">Tên User</span>
+            <div class="tooltip hover:opacity-100 opacity-0 peer-hover:opacity-100 absolute top-full right-0 z-50 bg-slate-900 text-white text-xs px-3 py-2 rounded-xl shadow-xl whitespace-nowrap transition-opacity duration-150">
+              <span class="usernameDisplayHover">Tên User</span>
             </div>
 
             <div class="dropdownMenu hidden flex flex-col gap-3 absolute rounded-lg top-full right-0 bg-white border mt-2 p-2 w-32 shadow-xl">

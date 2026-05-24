@@ -133,6 +133,7 @@ if (el.form) {
     alert("Đăng nhập thành công!");
 
     window.location.href = "../index.html";
+
   });
 }
 
@@ -155,3 +156,4 @@ window.dangNhapFacebook = () => {
 
   window.location.href = "../index.html";
 };
+

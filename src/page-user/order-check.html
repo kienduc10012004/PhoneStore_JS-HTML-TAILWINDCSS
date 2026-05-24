@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../output.css" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.11.0/axios.min.js"></script>
   </head>
 
   <body class="bg-slate-50 min-h-screen text-slate-900">
@@ -28,24 +29,30 @@
               <a href="./policy-warranty.html" class="block px-4 py-3 rounded-xl hover:bg-slate-100 duration-100 font-bold">Chính sách bảo hành</a>
             </div>
           </div>
-          <a href="./order-check.html" class="duration-100 hover:text-blue-600 font-bold w-35 h-6 text-blue-400">Kiểm tra đơn hàng</a>
+          <a href="./order-check.html" class="duration-100 hover:text-blue-600 font-bold w-35 text-blue-400 h-6">Kiểm tra đơn hàng</a>
           <hr class="text-slate-400">
           <div class="flex flex-col gap-5 w-full justify-center items-center">
             <!-- wishlist btn -->
-            <button id="btnWishlist" class="btnWishlist flex gap-2 relative w-full h-11 rounded-2xl bg-slate-100 border border-slate-500 hover:bg-rose-50 hover:text-rose-500 items-center hover:border-rose-500 font-bold justify-center cursor-pointer duration-100">
+            <button class="btnWishlist flex gap-2 relative w-full h-11 rounded-2xl bg-slate-100 border border-slate-500 hover:bg-rose-50 hover:text-rose-500 items-center hover:border-rose-500 font-bold justify-center cursor-pointer duration-100">
               <i class="fa-solid fa-heart text-sm"></i> Yêu thích
-              <span id="badgeWishlist" class="badgeWishlist absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-black min-w-5 h-5 px-1 rounded-full flex items-center justify-center ring-4 ring-white">0</span>
+              <span  class="badgeWishlist absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-black min-w-5 h-5 px-1 rounded-full flex items-center justify-center ring-4 ring-white">0</span>
             </button>
             <!-- đăng kí, đăng nhâp -->
              <a href="./login.html" class="loginBtnMobile w-full flex items-center justify-center px-5 py-3 rounded-2xl border border-slate-200 bg-[#1d27eb] hover:opacity-100 opacity-80 font-bold text-sm text-white transition">
               Đăng nhập | Đăng kí
             </a>
 
-            <div class="userProfileMobile w-full hidden relative">
-              <button class="avatarBtn flex items-center gap-2 border w-full justify-center bg-[#4850ed] text-white font-medium  p-3 rounded-2xl">
+            <div class="userProfileMobile group w-full hidden relative">
+              <button class="avatarBtn peer flex items-center
+                gap-2 border w-full justify-center bg-[#4850ed] text-white font-medium  p-3 rounded-2xl">
                 <i class="fa-solid fa-circle-user"></i>
                 <span class="usernameDisplay truncate">Tên User</span>
               </button>
+
+              <!-- tooltip tên đầy đủ -->
+              <div class="tooltip hover:opacity-100 opacity-0 peer-hover:opacity-100 absolute top-full right-0 z-50 bg-slate-900 text-white text-xs px-3 py-2 rounded-xl shadow-xl whitespace-nowrap transition-opacity duration-150">
+                <span class="usernameDisplayHover">Tên User</span>
+              </div>
 
               <div class="dropdownMenu hidden absolute top-full flex flex-col md:flex-row left-[50%] translate-x-[-50%] bg-white border mt-2 p-2 w-full shadow-lg rounded-lg gap-3">
                 <button class="btnDangXuat block w-full text-left p-3 font-medium rounded-lg text-white bg-red-500 hover:bg-red-600 cursor-pointer duration-100 flex justify-center">Đăng xuất</button>
@@ -86,9 +93,9 @@
         </nav>
     
         <div class="flex items-center gap-5">
-          <button id="btnWishlist" class="btnWishlist hidden lg:flex relative w-11 h-11 rounded-2xl bg-slate-200 hover:bg-rose-100 hover:text-rose-500 items-center justify-center cursor-pointer duration-100">
+          <button class="btnWishlist hidden lg:flex relative w-11 h-11 rounded-2xl bg-slate-200 hover:bg-rose-100 hover:text-rose-500 items-center justify-center cursor-pointer duration-100">
             <i class="fa-solid fa-heart text-sm"></i>
-            <span id="badgeWishlist" class="badgeWishlist absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-black min-w-5 h-5 px-1 rounded-full flex items-center justify-center ring-4 ring-white">0</span>
+            <span class="badgeWishlist absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-black min-w-5 h-5 px-1 rounded-full flex items-center justify-center ring-4 ring-white">0</span>
           </button>
           
           <!-- btn menu mobile -->
@@ -106,11 +113,16 @@
             Đăng nhập | Đăng kí
           </a>
 
-          <div class="userProfileDesktop relative">
-            <button class="avatarBtn flex items-center cursor-pointer bg-[#4850ed] hover:bg-indigo-700 duration-100 gap-2 border p-3 text-white font-medium rounded-2xl">
+          <div class="userProfileDesktop group relative">
+            <button class="avatarBtn flex peer items-center cursor-pointer bg-[#4850ed] hover:bg-indigo-700 duration-100 gap-2 border p-3 text-white font-medium rounded-2xl">
               <i class="fa-solid fa-circle-user"></i>
               <span class="usernameDisplay truncate max-w-[80px]">Tên User</span>
             </button>
+
+            <!-- tooltip tên đầy đủ -->
+            <div class="tooltip hover:opacity-100 opacity-0 peer-hover:opacity-100 absolute top-full right-0 z-50 bg-slate-900 text-white text-xs px-3 py-2 rounded-xl shadow-xl whitespace-nowrap transition-opacity duration-150">
+              <span class="usernameDisplayHover">Tên User</span>
+            </div>
 
             <div class="dropdownMenu hidden flex flex-col gap-3 absolute rounded-lg top-full right-0 bg-white border mt-2 p-2 w-32 shadow-xl">
               <button class="btnDangXuat block w-full text-left bg-red-500 text-white font-medium cursor-pointer hover:bg-red-600 duration-100 rounded-lg p-3 flex justify-center">Đăng xuất</button>
@@ -228,7 +240,6 @@
   </div>
   <!-- script js -->
   <script type="module" src="../js/index.js"></script>
-
-    <script type="module" src="../js/userJS/order-check-flow.js"></script>
+  <script type="module" src="../js/userJS/order-check-flow.js"></script>
   </body>
 </html>

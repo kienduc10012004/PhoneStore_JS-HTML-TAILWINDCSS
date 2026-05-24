@@ -67,9 +67,9 @@ export const el = {
   dropdownMenu: document.querySelectorAll(".dropdownMenu"),
   btnThoat: document.querySelectorAll(".btnThoat"),
   btnDangXuat: document.querySelectorAll(".btnDangXuat"),
+  usernameDisplayHover:document.querySelectorAll(".usernameDisplayHover"),
 };
 
-// --
 export const getCurrentUsername = () => {
   return localStorage.getItem("username") || "guest";
 };
@@ -81,13 +81,10 @@ export const getUserCartKey = () => {
 export const getUserWishlistKey = () => {
   return `WISHLIST_USER_${getCurrentUsername()}`;
 };
-// --
 
 export const state = {
   danhSachSP: [],
   activeList: [],
-  // gioHang: JSON.parse(localStorage.getItem("GIO_HANG_USER")) || [],
-  // wishlist: JSON.parse(localStorage.getItem("WISHLIST_USER")) || [],
   gioHang: JSON.parse(localStorage.getItem(getUserCartKey())) || [],
   wishlist: JSON.parse(localStorage.getItem(getUserWishlistKey())) || [],
   users: JSON.parse(localStorage.getItem(USER_STORAGE_KEY)) || [],
@@ -96,15 +93,6 @@ export const state = {
   itemsPerPage: 8,
   currentSlide: 0,
 };
-
-// export const luuGioHang = () => {
-//   localStorage.setItem("GIO_HANG_USER", JSON.stringify(state.gioHang));
-// };
-
-// export const luuWishlist = () => {
-//   localStorage.setItem("WISHLIST_USER", JSON.stringify(state.wishlist));
-// };
-
 
 export const luuGioHang = () => {
   localStorage.setItem(

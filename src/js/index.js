@@ -1,4 +1,4 @@
-import { el, capNhatSoLuongGioHang, isInPageUser } from "./userJS/core.js";
+import { el, capNhatSoLuongGioHang, isInPageUser, state, } from "./userJS/core.js";
 import { bindFilterEvent, renderUserBrandFilter  } from "./userJS/filter-flow.js";
 import { bindPopupEvents } from "./userJS/popup-flow.js";
 import { layDanhSachSP } from "./userJS/product-flow.js";
@@ -40,6 +40,10 @@ const hienThiTrangThaiDangNhap = () => {
     el.usernameDisplay.forEach((item) => {
       item.textContent = username || "User";
     });
+    
+    el.usernameDisplayHover.forEach((itemHover) => {
+      itemHover.textContent = username;
+    })
   } else {
     loginBtnMobile?.classList.remove("hidden");
 
