@@ -15,7 +15,7 @@
     <!-- header -->
     <header class="sticky top-0 z-50 bg-gray-100/70 backdrop-blur-2xl border-b border-slate-300">
       <!-- menu mobile -->
-      <div id="contentMenuMobile" class="hidden lg:hidden w-[50%] bg-gray-100 z-50 h-[70vh] backdrop-blur-xl border border-slate-300 rounded-br-2xl mt-20.5 absolute">
+      <div id="contentMenuMobile" class="hidden lg:hidden w-[50%] bg-gray-100 z-50 h-[70vh] max-h-screen overflow-y-auto overscroll-contain pb-6 backdrop-blur-xl border border-slate-300 rounded-br-2xl mt-20.5 absolute">
         <span id="closeMenuMobile" class="absolute text-sm duration-100 cursor-pointer px-3 py-2 rounded-lg right-5 top-5 bg-white border hover:bg-red-500 hover:text-white font-bold" onclick="closeOrOpenMenuMobile()">X</span>
         <div class="p-3 flex flex-col gap-10 mt-5">
           <a href="../index.html" class="duration-100 hover:text-blue-600 font-bold w-22 h-6">Trang chủ</a>
@@ -133,23 +133,34 @@
         </div>
       </div>
     </header>
+
+
+
     <!-- main -->
     <main class="max-w-7xl mx-auto px-4 md:px-6 py-10">
       <div class="mb-6">
         <p class="text-blue-600 font-black uppercase text-xs tracking-widest">Đơn hàng</p>
         <h1 class="text-4xl font-black mt-2">Kiểm tra đơn hàng</h1>
       </div>
-
       <div class="bg-white border rounded-[2rem] overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
-          <table class="w-full min-w-[900px] text-left">
+          <table class="w-full min-w-[1180px] table-fixed text-left">
+            <colgroup>
+              <col class="w-[20%]" />
+              <col class="w-[30%]" />
+              <col class="w-[14%]" />
+              <col class="w-[12%]" />
+              <col class="w-[10%]" />
+              <col class="w-[14%]" />
+            </colgroup>
             <thead>
               <tr class="border-b text-xs uppercase text-slate-400">
-                <th class="p-4">Mã đơn hàng</th>
-                <th class="p-4">Sản phẩm</th>
-                <th class="p-4 text-right">Tổng tiền</th>
+                <th class="p-4 text-center">Mã đơn hàng</th>
+                <th class="p-4 text-center">Sản phẩm</th>
+                <th class="p-4 text-center">Tổng tiền</th>
                 <th class="p-4 text-center">Hủy đơn</th>
-                <th class="p-4">Trạng thái</th>
+                <th class="p-4 text-center">Trạng thái</th>
+                <th class="p-4 text-center">Lý do hủy</th>
               </tr>
             </thead>
             <tbody id="orderTableBody"></tbody>

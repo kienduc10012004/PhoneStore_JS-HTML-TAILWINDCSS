@@ -1,11 +1,15 @@
+/* ================= IMPORT MODULES ================= */
 import { el } from "./core.js";
 
+/* ================= KEY LOCALSTORAGE ================= */
 const ADMIN_STORAGE_KEY = "KIENPHONE_ADMIN";
 const USER_STORAGE_KEY = "KIENPHONE_USERS";
 
+/* ================= REGEX KIỂM TRA MẬT KHẨU ================= */
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/;
 
+/* ================= LẤY TÀI KHOẢN ADMIN ================= */
 const getAdminAccount = () => {
   const admin = JSON.parse(localStorage.getItem(ADMIN_STORAGE_KEY));
 
@@ -13,6 +17,7 @@ const getAdminAccount = () => {
     return admin;
   }
 
+  /* Tạo admin mặc định nếu chưa có */
   const defaultAdmin = {
     username: "admin",
     password: "Admin123@",
@@ -26,10 +31,12 @@ const getAdminAccount = () => {
   return defaultAdmin;
 };
 
+/* ================= LẤY DANH SÁCH USER ================= */
 const getUsers = () => {
   return JSON.parse(localStorage.getItem(USER_STORAGE_KEY)) || [];
 };
 
+/* ================= HIỂN THỊ LỖI INPUT ================= */
 const showError = (input, errorElement, message) => {
   input.classList.remove("border-green-500");
   input.classList.add("border-red-500");
@@ -38,6 +45,7 @@ const showError = (input, errorElement, message) => {
   errorElement.classList.remove("hidden");
 };
 
+/* ================= HIỂN THỊ INPUT HỢP LỆ ================= */
 const showSuccess = (input, errorElement) => {
   input.classList.remove("border-red-500");
   input.classList.add("border-green-500");
@@ -45,6 +53,7 @@ const showSuccess = (input, errorElement) => {
   errorElement.classList.add("hidden");
 };
 
+/* ================= XỬ LÝ FORM ĐĂNG NHẬP ================= */
 if (el.form) {
   el.form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -54,6 +63,7 @@ if (el.form) {
     const usernameValue = el.username.value.trim();
     const passwordValue = el.password.value.trim();
 
+    /* ================= KIỂM TRA USERNAME ================= */
     if (usernameValue === "") {
       showError(
         el.username,
@@ -66,6 +76,7 @@ if (el.form) {
       showSuccess(el.username, el.usernameError);
     }
 
+    /* ================= KIỂM TRA PASSWORD ================= */
     if (passwordValue === "") {
       showError(
         el.password,
@@ -86,10 +97,12 @@ if (el.form) {
       showSuccess(el.password, el.passwordError);
     }
 
+    /* ================= DỪNG NẾU FORM KHÔNG HỢP LỆ ================= */
     if (!isValid) {
       return;
     }
 
+    /* ================= ĐĂNG NHẬP ADMIN ================= */
     const adminAccount = getAdminAccount();
 
     if (
@@ -107,6 +120,7 @@ if (el.form) {
       return;
     }
 
+    /* ================= ĐĂNG NHẬP USER ================= */
     const users = getUsers();
 
     const userFound = users.find((user) => {
@@ -116,16 +130,19 @@ if (el.form) {
       );
     });
 
+    /* ================= USER CHƯA ĐĂNG KÝ ================= */
     if (!userFound) {
       alert("tài khoảng chưa được đăng kí");
       return;
     }
 
+    /* ================= USER BỊ KHÓA ================= */
     if (userFound.status === "locked") {
       alert("Tài khoản của bạn đã bị khóa");
       return;
     }
 
+    /* ================= LƯU TRẠNG THÁI ĐĂNG NHẬP USER ================= */
     localStorage.setItem("isLoggedIn", "true");
     localStorage.setItem("username", userFound.username);
     localStorage.setItem("role", userFound.role || "user");
@@ -133,10 +150,10 @@ if (el.form) {
     alert("Đăng nhập thành công!");
 
     window.location.href = "../index.html";
-
   });
 }
 
+/* ================= ĐĂNG NHẬP GOOGLE ================= */
 window.dangNhapGoogle = () => {
   localStorage.setItem("isLoggedIn", "true");
   localStorage.setItem("username", "Google User");
@@ -147,6 +164,7 @@ window.dangNhapGoogle = () => {
   window.location.href = "../index.html";
 };
 
+/* ================= ĐĂNG NHẬP FACEBOOK ================= */
 window.dangNhapFacebook = () => {
   localStorage.setItem("isLoggedIn", "true");
   localStorage.setItem("username", "Facebook User");
@@ -156,4 +174,3 @@ window.dangNhapFacebook = () => {
 
   window.location.href = "../index.html";
 };
-

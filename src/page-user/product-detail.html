@@ -23,7 +23,7 @@
     <!-- header -->
     <header class="sticky top-0 z-50 bg-gray-100/70 backdrop-blur-2xl border-b border-slate-300">
       <!-- menu mobile -->
-      <div id="contentMenuMobile" class="hidden lg:hidden w-[50%] bg-gray-100 z-50 h-[70vh] backdrop-blur-xl border border-slate-300 rounded-br-2xl mt-20.5 absolute">
+      <div id="contentMenuMobile" class="hidden lg:hidden w-[50%] bg-gray-100 z-50 h-[70vh] max-h-screen overflow-y-auto overscroll-contain pb-6 backdrop-blur-xl border border-slate-300 rounded-br-2xl mt-20.5 absolute">
         <span id="closeMenuMobile" class="absolute text-sm duration-100 cursor-pointer px-3 py-2 rounded-lg right-5 top-5 bg-white border hover:bg-red-500 hover:text-white font-bold" onclick="closeOrOpenMenuMobile()">X</span>
         <div class="p-3 flex flex-col gap-10 mt-5">
           <a href="../index.html" class="duration-100 hover:text-blue-600 font-bold w-22 h-6">Trang chủ</a>
@@ -149,37 +149,16 @@
           Có thể bạn thích
         </p>
         <h2 class="text-3xl font-black mt-1 mb-6">Sản phẩm đề xuất</h2>
+        <!-- loading -->
+        <div id="loading" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div class="h-96 rounded-3xl bg-slate-200 animate-pulse"></div>
+          <div class="h-96 rounded-3xl bg-slate-200 animate-pulse"></div>
+          <div class="h-96 rounded-3xl bg-slate-200 animate-pulse"></div>
+          <div class="h-96 rounded-3xl bg-slate-200 animate-pulse"></div>
+        </div>
         <div id="relatedProducts" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
       </section>
-      <section class="mt-12 bg-white border border-slate-300 rounded-[2rem] p-6 md:p-8">
-        <p class="text-blue-600 text-xs font-black uppercase tracking-widest">
-          Đánh giá & phản hồi
-        </p>
-        <h2 class="text-3xl font-black mt-1 mb-6">Khách hàng nói gì?</h2>
-        <div class="grid md:grid-cols-3 gap-4">
-          <div class="bg-slate-50 rounded-2xl p-5">
-            <p class="text-amber-400">★★★★★</p>
-            <b>Sản phẩm tốt</b>
-            <p class="text-sm text-slate-500 mt-2">
-              Máy đẹp, giao hàng nhanh, đóng gói kỹ.
-            </p>
-          </div>
-          <div class="bg-slate-50 rounded-2xl p-5">
-            <p class="text-amber-400">★★★★★</p>
-            <b>Dịch vụ ổn</b>
-            <p class="text-sm text-slate-500 mt-2">
-              Nhân viên tư vấn rõ ràng, dễ hiểu.
-            </p>
-          </div>
-          <div class="bg-slate-50 rounded-2xl p-5">
-            <p class="text-amber-400">★★★★☆</p>
-            <b>Đáng mua</b>
-            <p class="text-sm text-slate-500 mt-2">
-              Giá tốt, chính sách bảo hành minh bạch.
-            </p>
-          </div>
-        </div>
-      </section>
+      <section id="productReviewSection" class="mt-12 bg-white border border-slate-300 rounded-[2rem] p-6 md:p-8"></section>
     </main>
     <!-- footer -->
     <footer class="mt-10 z-50 bg-gray-100 backdrop-blur-xl border-t border-slate-300">
@@ -260,6 +239,75 @@
           <button id="btnCloseWishlist" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-red-500 hover:text-white transition duration-100 font-bold cursor-pointer"> X </button>
         </div>
         <div id="wishlistContent" class="space-y-4 max-h-[60vh] overflow-y-auto"></div>
+      </div>
+    </div>
+    <!-- popup mua hàng & thêm giỏ hàng -->
+    <div id="productOptionPopup" class="hidden fixed inset-0 z-[90] flex items-center justify-center p-4">
+      <div id="productOptionOverlay" class="absolute inset-0 bg-black/50"></div>
+
+      <div class="relative bg-white w-full max-w-xl rounded-3xl p-6 shadow-2xl">
+        <button id="btnCloseProductOptionPopup" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-red-500 hover:text-white font-bold cursor-pointer">
+          X
+        </button>
+
+        <h2 id="productOptionTitle" class="text-2xl font-black mb-5">
+          Mua hàng
+        </h2>
+
+        <div id="productOptionContent"></div>
+      </div>
+    </div>
+    <!-- popup yêu cầu đăng nhập -->
+    <div
+      id="popupRequireLogin"
+      class="hidden fixed inset-0 z-[999] flex items-center justify-center p-4"
+    >
+      <div
+        id="overlayRequireLogin"
+        class="absolute inset-0 bg-black/50"
+      ></div>
+
+      <div
+        class="relative bg-white rounded-[2rem] p-8 w-full max-w-md shadow-2xl animate-popup"
+      >
+        <button
+          id="btnCloseRequireLogin"
+          class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-red-500 hover:text-white duration-100 font-bold"
+        >
+          X
+        </button>
+
+        <div class="text-center">
+          <div
+            class="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-5"
+          >
+            <i class="fa-solid fa-lock text-3xl text-blue-600"></i>
+          </div>
+
+          <h2 class="text-2xl font-black text-slate-800 mb-3">
+            Bạn chưa đăng nhập
+          </h2>
+
+          <p class="text-slate-500 font-semibold mb-6">
+            Vui lòng đăng nhập để tiếp tục mua hàng hoặc thêm sản phẩm vào giỏ hàng
+          </p>
+
+          <div class="flex flex-col gap-3">
+            <button
+              id="btnGoLogin"
+              class="w-full py-4 rounded-2xl cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-black duration-100"
+            >
+              Đăng nhập ngay
+            </button>
+
+            <button
+              id="btnLaterLogin"
+              class="w-full py-4 rounded-2xl cursor-pointer bg-slate-100 hover:bg-slate-200 font-bold duration-100"
+            >
+              Để sau
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <!-- script js -->

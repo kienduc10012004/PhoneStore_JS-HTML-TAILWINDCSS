@@ -1,100 +1,117 @@
-import { dom, state, formatCurrency } from "./core.js";
+/* ================= IMPORT MODULES ================= */
+import { dom, state, formatCurrency, selectElements } from "./core.js";
 
-const getAllOrdersForAdmin = () => {
-  let allOrders = [];
+/* ================= ADMIN: LẤY TẤT CẢ ĐƠN HÀNG ================= */
 
-  for (let index = 0; index < localStorage.length; index++) {
-    const key = localStorage.key(index);
+/* Lấy toàn bộ đơn hàng của tất cả user */
+export const getAllOrdersForAdmin = () => {
+  const allOrders = [];
 
-    if (key?.startsWith("KP_ORDERS_")) {
-      const value = localStorage.getItem(key);
+  Object.keys(localStorage).forEach((key) => {
+    /* Chỉ lấy key đơn hàng */
+    if (!key.startsWith("KP_ORDERS_")) return;
 
-      if (!value || value === "undefined") {
-        continue;
-      }
+    /* Lấy username từ key */
+    const username = key.replace("KP_ORDERS_", "");
 
-      let orders = [];
+    /* Lấy dữ liệu đơn hàng */
+    const value = localStorage.getItem(key);
 
-      try {
-        orders = JSON.parse(value);
-      } catch (error) {
-        orders = [];
-      }
+    if (!value || value === "undefined") return;
 
-      if (!Array.isArray(orders)) {
-        continue;
-      }
+    let orders = [];
 
-      const ordersWithStorageKey = orders.map((order) => {
-        return {
-          ...order,
-          storageKey: key
-        };
-      });
-
-      allOrders.push(...ordersWithStorageKey);
+    /* Parse JSON an toàn */
+    try {
+      orders = JSON.parse(value);
+    } catch (error) {
+      orders = [];
     }
-  }
+
+    /* Bỏ qua nếu không phải mảng */
+    if (!Array.isArray(orders)) return;
+
+    /* Gắn ownerUsername để admin biết đơn thuộc ai */
+    orders.forEach((order) => {
+      allOrders.push({
+        ...order,
+        ownerUsername: username,
+      });
+    });
+  });
 
   return allOrders;
 };
 
-const saveOrderToCorrectUser = (order) => {
-  const orders = JSON.parse(localStorage.getItem(order.storageKey)) || [];
+/* ================= ADMIN: TÌM ĐƠN HÀNG ================= */
 
-  const updatedOrders = orders.map((item) => {
-    if (item.id === order.id) {
-      const newOrder = { ...order };
+/* Tìm đơn hàng theo mã đơn + username */
+export const findOrderForAdmin = (orderId, username) => {
+  const orders =
+    JSON.parse(localStorage.getItem(`KP_ORDERS_${username}`)) || [];
 
-      delete newOrder.storageKey;
+  return orders.find((order) => {
+    return order.id === orderId;
+  });
+};
 
-      return newOrder;
+/* ================= ADMIN: CẬP NHẬT ĐƠN HÀNG ================= */
+
+/* Cập nhật đơn hàng đúng user */
+export const updateOrderForAdmin = (username, updatedOrder) => {
+  const key = `KP_ORDERS_${username}`;
+
+  const orders = JSON.parse(localStorage.getItem(key)) || [];
+
+  const newOrders = orders.map((order) => {
+    if (order.id === updatedOrder.id) {
+      return updatedOrder;
     }
 
-    return item;
+    return order;
   });
 
-  localStorage.setItem(
-    order.storageKey,
-    JSON.stringify(updatedOrders)
-  );
+  localStorage.setItem(key, JSON.stringify(newOrders));
 };
 
-const deleteOrderFromCorrectUser = (order) => {
-  const orders = JSON.parse(localStorage.getItem(order.storageKey)) || [];
+/* ================= ADMIN: XÓA ĐƠN HÀNG ================= */
 
-  const updatedOrders = orders.filter((item) => {
-    return item.id !== order.id;
+/* Xóa đơn hàng đúng user */
+export const deleteOrderForAdmin = (username, orderId) => {
+  const key = `KP_ORDERS_${username}`;
+
+  const orders = JSON.parse(localStorage.getItem(key)) || [];
+
+  const newOrders = orders.filter((order) => {
+    return order.id !== orderId;
   });
 
-  localStorage.setItem(
-    order.storageKey,
-    JSON.stringify(updatedOrders)
-  );
+  localStorage.setItem(key, JSON.stringify(newOrders));
 };
 
-const getStatusClass = (status) => {
-  if (status === "Đã bị hủy") return "bg-red-100 text-red-600";
-  if (status === "Đang giao hàng") return "bg-blue-100 text-blue-600";
-  if (status === "Đã giao hàng") return "bg-emerald-100 text-emerald-600";
-  return "bg-amber-100 text-amber-600";
+/* Kiểm tra đơn hàng có được xóa không */
+const canDeleteOrder = (status) => {
+  return status === "Đã bị hủy" || status === "Đã giao hàng";
 };
 
-const getFilteredOrders = () => {
-  const keyword = dom.orderKeyword?.value.toLowerCase().trim() || "";
+/* ================= HÀM HỖ TRỢ HIỂN THỊ ĐƠN HÀNG ================= */
 
-  if (!keyword) {
-    return state.orders;
-  }
-
-  return state.orders.filter((order) => {
-    return (
-      String(order.id || "").toLowerCase().includes(keyword) ||
-      String(order.customer?.fullName || "").toLowerCase().includes(keyword) ||
-      String(order.customer?.phone || "").includes(keyword)
-    );
-  });
+/* Lấy tên khách hàng */
+const getCustomerName = (order) => {
+  return order.customer?.fullName || "Không có";
 };
+
+/* Lấy số điện thoại khách hàng */
+const getCustomerPhone = (order) => {
+  return order.customer?.phone || "Không có";
+};
+
+/* Lấy số lượng sản phẩm trong đơn */
+const getTotalOrderItems = (order) => {
+  return order.items ? order.items.length : 0;
+};
+
+/* ================= RENDER ĐƠN HÀNG ADMIN ================= */
 
 const renderOrderProducts = (items) => {
   return items.map((item) => {
@@ -104,21 +121,50 @@ const renderOrderProducts = (items) => {
         <div>
           <p class="font-bold text-sm">${item.name}</p>
           <p class="text-xs text-slate-500">${formatCurrency(item.price)} x ${item.soLuong || 1}</p>
+          ${
+            item.selectedCapacity
+              ? `
+                <p class="text-xs font-bold text-blue-600 mt-1">
+                  Dung lượng: ${item.selectedCapacity}
+                </p>
+              `
+              : ""
+          }
+
+          ${
+            item.selectedColor
+              ? `
+                <p class="text-xs font-bold text-orange-500">
+                  Màu sắc: ${item.selectedColor}
+                </p>
+              `
+              : ""
+          }
         </div>
       </div>
     `;
   }).join("");
 };
 
-export const renderOrders = () => {
+/* Lấy ngày - giờ phút giây tạo đơn để group */
+const getOrderDateTime = (order) => {
+  if (!order.createdAt) {
+    return "Không xác định";
+  }
+
+  const [date, time] = order.createdAt.split(" ");
+
+  return `${date} - ${time}`;
+};
+
+/* Render danh sách đơn hàng */
+const renderOrders = () => {
   if (!dom.orderTableBody) return;
 
-  const orders = getFilteredOrders();
-
-  if (orders.length === 0) {
+  if (state.orders.length === 0) {
     dom.orderTableBody.innerHTML = `
       <tr>
-        <td colspan="9" class="text-center py-10 text-slate-400 font-bold">
+        <td colspan="7" class="py-10 text-center text-slate-400 font-bold">
           Chưa có đơn hàng
         </td>
       </tr>
@@ -126,90 +172,112 @@ export const renderOrders = () => {
     return;
   }
 
-  dom.orderTableBody.innerHTML = orders.map((order) => {
-    const disabledStatus = order.status === "Đã bị hủy" ? "disabled" : "";
+/* Gom nhóm đơn hàng theo ngày tạo */
+const groupedOrders = {};
 
-    const selectClass = order.status === "Đã bị hủy"
-      ? "border rounded-xl px-3 py-2 text-sm bg-slate-100 text-slate-400 opacity-60 cursor-not-allowed"
-      : "border rounded-xl px-3 py-2 text-sm cursor-pointer";
+state.orders.forEach((order) => {
+  const date = getOrderDateTime(order);
 
-    const disabledDelete = order.status === "Đã bị hủy" ? "" : "disabled";
+  if (!groupedOrders[date]) {
+    groupedOrders[date] = [];
+  }
 
-    const deleteClass = order.status === "Đã bị hủy"
-      ? "bg-red-500 hover:bg-red-600 text-white cursor-pointer"
-      : "bg-slate-200 text-slate-400 cursor-not-allowed";
+  groupedOrders[date].push(order);
+});
 
+dom.orderTableBody.innerHTML = Object.entries(groupedOrders)
+  .map(([date, orders]) => {
     return `
-      <tr class="border-b align-top hover:bg-slate-50">
-        <td class="p-4 font-black text-indigo-600 whitespace-nowrap">${order.id}</td>
-        <td class="p-4">${order.customer?.fullName || "Không có"}</td>
-        <td class="p-4">${order.customer?.phone || "Không có"}</td>
-        <td class="p-4 min-w-64">${renderOrderProducts(order.items || [])}</td>
-        <td class="p-4 text-right font-black text-emerald-600 whitespace-nowrap">${formatCurrency(order.total)}</td>
-        <td class="p-4">
-          <select class="orderStatusSelect ${selectClass}" data-id="${order.id}" ${disabledStatus}>
-            <option ${order.status === "Chờ xác nhận đặt hàng" ? "selected" : ""}>Chờ xác nhận đặt hàng</option>
-            <option ${order.status === "Chuẩn bị hàng" ? "selected" : ""}>Chuẩn bị hàng</option>
-            <option ${order.status === "Đang giao hàng" ? "selected" : ""}>Đang giao hàng</option>
-            <option ${order.status === "Đã giao hàng" ? "selected" : ""}>Đã giao hàng</option>
-            <option ${order.status === "Đã bị hủy" ? "selected" : ""}>Đã bị hủy</option>
-          </select>
-        </td>
-        <td class="p-4 text-center">
-          <span class="px-3 py-1 rounded-full text-xs font-black ${getStatusClass(order.status)} whitespace-nowrap">
-            ${order.status}
-          </span>
-          <p class="text-xs text-slate-400 mt-2">${order.createdAt || ""}</p>
-        </td>
+      <tr>
+        <td colspan="7" class="bg-slate-100 py-4 px-4">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">📅</span>
 
-        <td class="p-4 min-w-[220px]">
-          <div class="max-w-[220px] break-words text-center text-sm text-slate-600">
-            ${order.note || "Không có"}
+            <span class="font-black text-slate-700">
+              ${date}
+            </span>
           </div>
         </td>
-
-        <td class="p-4 text-center">
-          <button class="btnDeleteOrder px-3 py-2 rounded-xl text-sm font-bold ${deleteClass}" data-id="${order.id}" ${disabledDelete}>
-            Xóa
-          </button>
-        </td>
       </tr>
+
+      ${orders.map((order) => {
+        return `
+          <tr class="border-b hover:bg-slate-50">
+            <td class="p-4 text-center font-black text-indigo-600">
+              ${order.id}
+            </td>
+
+            <td class="p-4 font-bold">
+              ${getCustomerName(order)}
+            </td>
+
+            <td class="p-4 text-center font-bold">
+              ${getCustomerPhone(order)}
+            </td>
+
+            <td class="p-4 min-w-64">
+              ${renderOrderProducts(order.items || [])}
+            </td>
+
+            <td class="p-4 text-center font-black text-red-500">
+              ${formatCurrency(order.total)}
+            </td>
+
+            <td class="p-4 text-center">
+              <a
+                href="./order-detail.html?id=${order.id}&user=${order.ownerUsername}"
+                class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold"
+              >
+                Xem chi tiết
+              </a>
+            </td>
+
+            <td class="p-4 text-center">
+              <button
+                class="btnDeleteOrder px-4 py-2 rounded-xl font-bold ${
+                  canDeleteOrder(order.status)
+                    ? "bg-red-500 hover:bg-red-600 text-white cursor-pointer"
+                    : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                }"
+                data-id="${order.id}"
+                data-user="${order.ownerUsername}"
+                ${canDeleteOrder(order.status) ? "" : "disabled"}
+              >
+                Xóa
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("")}
     `;
-  }).join("");
+  })
+  .join("");
 
-  document.querySelectorAll(".orderStatusSelect").forEach((select) => {
-    select.addEventListener("change", () => {
-      const orderId = select.dataset.id;
+  handleDeleteOrderButtons();
+};
 
-      const order = state.orders.find((item) => {
-        return item.id === orderId;
-      });
+/* ================= XÓA ĐƠN HÀNG Ở TRANG QUẢN LÝ ================= */
 
-      if (!order || order.status === "Đã bị hủy") return;
-
-      order.status = select.value;
-      saveOrderToCorrectUser(order);
-      renderOrders();
-    });
-  });
-
-  document.querySelectorAll(".btnDeleteOrder").forEach((button) => {
+/* Gắn sự kiện cho nút xóa đơn */
+const handleDeleteOrderButtons = () => {
+  selectElements(".btnDeleteOrder").forEach((button) => {
     button.addEventListener("click", () => {
       const orderId = button.dataset.id;
+      const username = button.dataset.user;
 
       const order = state.orders.find((item) => {
         return item.id === orderId;
       });
 
-      if (!order || order.status !== "Đã bị hủy") {
-        alert("Admin chỉ được xóa đơn hàng đã bị hủy");
+      if (!order || !canDeleteOrder(order.status)) {
+        alert("Admin chỉ được xóa đơn hàng đã bị hủy hoặc đã giao");
         return;
       }
 
-      const isConfirm = confirm("Xóa đơn hàng này?");
+      const isConfirm = confirm("Bạn có chắc muốn xóa đơn hàng này?");
       if (!isConfirm) return;
 
-      deleteOrderFromCorrectUser(order);
+      deleteOrderForAdmin(username, orderId);
 
       state.orders = state.orders.filter((item) => {
         return item.id !== orderId;
@@ -220,6 +288,120 @@ export const renderOrders = () => {
   });
 };
 
+/* ================= TÌM KIẾM ĐƠN HÀNG ADMIN ================= */
+
+/* Lọc đơn hàng theo mã đơn / khách hàng / số điện thoại */
+const filterOrders = (keyword) => {
+  const value = keyword.trim().toLowerCase();
+
+  if (!value) {
+    state.orders = getAllOrdersForAdmin();
+    renderOrders();
+    return;
+  }
+
+  state.orders = getAllOrdersForAdmin().filter((order) => {
+    const orderId = String(order.id || "").toLowerCase();
+    const customerName = String(order.customer?.fullName || "").toLowerCase();
+    const customerPhone = String(order.customer?.phone || "").toLowerCase();
+
+    return (
+      orderId.includes(value) ||
+      customerName.includes(value) ||
+      customerPhone.includes(value)
+    );
+  });
+
+  renderOrders();
+};
+
+/* Gắn sự kiện nút tìm kiếm */
+const handleSearchOrder = () => {
+  if (!dom.btnSearchOrder || !dom.orderKeyword) return;
+
+  dom.btnSearchOrder.addEventListener("click", () => {
+    filterOrders(dom.orderKeyword.value);
+  });
+
+  dom.orderKeyword.addEventListener("keyup", (event) => {
+    if (event.key === "Enter") {
+      filterOrders(dom.orderKeyword.value);
+    }
+  });
+};
+
+/* ================= XUẤT FILE EXCEL ================= */
+
+/* Xuất danh sách đơn hàng ra Excel */
+const exportOrdersToExcel = () => {
+const data = state.orders.map((order) => ({
+  "Mã đơn": order.id,
+
+  "Khách hàng":
+    order.customer?.fullName || "Không có",
+
+  "Số điện thoại":
+    order.customer?.phone || "Không có",
+
+  "Email":
+    order.customer?.email || "Không có",
+
+  "Phương thức nhận":
+    order.receiveMethod || "",
+
+  "Tổng tiền":
+    order.total || 0,
+
+  "Trạng thái":
+    order.status || "",
+
+  "Ngày đặt":
+    order.createdAt || "",
+
+  "Cập nhật":
+    order.updatedAt || "Chưa cập nhật",
+
+  "Ghi chú":
+    order.customer?.note ||
+    order.note ||
+    "Không có",
+}));
+
+const worksheet =
+  XLSX.utils.json_to_sheet(data);
+
+const workbook =
+  XLSX.utils.book_new();
+
+XLSX.utils.book_append_sheet(
+  workbook,
+  worksheet,
+  "Danh sách đơn hàng"
+);
+
+XLSX.writeFile(
+  workbook,
+  "danh-sach-don-hang.xlsx"
+);
+};
+
+/* Gắn sự kiện xuất Excel */
+const handleExportExcel = () => {
+console.log("btnExportExcel:", dom.btnExportExcel);
+if (!dom.btnExportExcel) return;
+
+dom.btnExportExcel.addEventListener("click", () => {
+    console.log("Đã bấm xuất Excel");
+    console.log("XLSX:", window.XLSX);
+    console.log("orders:", state.orders);
+    exportOrdersToExcel();
+  }
+);
+};
+
+/* ================= KHỞI TẠO TRANG QUẢN LÝ ĐƠN HÀNG ================= */
+
+/* Chạy chức năng quản lý đơn hàng */
 export const initManageOrder = () => {
   if (!dom.orderTableBody) return;
 
@@ -227,6 +409,6 @@ export const initManageOrder = () => {
 
   renderOrders();
 
-  dom.btnSearchOrder?.addEventListener("click", renderOrders);
-  dom.orderKeyword?.addEventListener("input", renderOrders);
+  handleSearchOrder();
+  handleExportExcel();
 };

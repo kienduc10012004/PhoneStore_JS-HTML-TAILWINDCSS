@@ -1,8 +1,8 @@
-import { el } from "./core.js";
+import { el, addDocumentEvent, pageBody } from "./core.js";
 
 export const bindPopupEvents = () => {
-  const closeCart = () => { el.popupGioHang?.classList.add("hidden"); document.body.classList.remove("overflow-hidden"); };
+  const closeCart = () => { el.popupGioHang?.classList.add("hidden"); pageBody.classList.remove("overflow-hidden"); };
   el.overlayGioHang?.addEventListener("click", closeCart);
   el.btnCloseGioHang?.addEventListener("click", closeCart);
-  document.addEventListener("keydown", e => { if (e.key === "Escape") closeCart(); });
+  addDocumentEvent("keydown", e => { if (e.key === "Escape") closeCart(); });
 };

@@ -1,90 +1,268 @@
-import { el, state, luuWishlist, isInPageUser } from "./core.js";
+import { el, state, luuWishlist, isInPageUser, getElement, selectElement, createElement } from "./core.js";
 
+/* ================= HÌNH ẢNH & FORMAT DỮ LIỆU ================= */
+
+/* Lấy đường dẫn hình ảnh */
 export const getImageUrl = (img) => {
-  if (!img) {
-    return "";
-  }
+  if (!img) return "";
 
   const value = String(img).trim();
 
-  if (value.startsWith("http://") || value.startsWith("https://") || value.startsWith("data:")) return value;
+  /* Nếu là URL online hoặc base64 */
+  if (
+    value.startsWith("http://") ||
+    value.startsWith("https://") ||
+    value.startsWith("data:")
+  ) {
+    return value;
+  }
 
-  const hasExtension = /\.(png|jpg|jpeg|webp|gif|svg)$/i.test(value);
-  const imagePath = hasExtension ? value : `${value}.png`;
+  /* Kiểm tra extension */
+  const hasExtension =
+    /\.(png|jpg|jpeg|webp|gif|svg)$/i.test(value);
+
+  const imagePath = hasExtension
+    ? value
+    : `${value}.png`;
+
   const fileName = imagePath.split("/").pop();
-  const prefix = isInPageUser() ? "../images/" : "./images/";
+
+  const prefix = isInPageUser()
+    ? "../images/"
+    : "./images/";
+
   return `${prefix}${fileName}`;
 };
 
-export const formatCurrency = (value) => Number(value || 0).toLocaleString("vi-VN") + " đ";
-export const getOldPrice = (price) => Math.round(Number(price || 0) * 1.14);
-export const getDiscountPercent = (price) => Math.round(((getOldPrice(price) - Number(price)) / getOldPrice(price)) * 100);
-export const getRating = (id) => [4.6, 4.7, 4.8, 4.9, 5.0][Number(id) % 5] || 4.8;
-export const renderStars = (rating) => Array.from({ length: 5 }, (_, i) => i < Math.floor(rating) ? "★" : "☆").join("");
-
-export const showToast = (message, type = "success") => {
-  if (!el.toastContainer) return;
-  const color = type === "error" ? "bg-red-50 text-red-700 border-red-100" : type === "warning" ? "bg-amber-50 text-amber-700 border-amber-100" : "bg-emerald-50 text-emerald-700 border-emerald-100";
-  const toast = document.createElement("div");
-  toast.className = `min-w-72 max-w-sm p-4 rounded-2xl border shadow-xl ${color} translate-x-8 opacity-0 transition-all duration-300`;
-  toast.innerHTML = `<div class="flex gap-3"><b>${type === "error" ? "!" : "✓"}</b><p class="text-sm font-bold">${message}</p></div>`;
-  el.toastContainer.appendChild(toast);
-  setTimeout(() => toast.classList.remove("translate-x-8", "opacity-0"), 20);
-  setTimeout(() => { toast.classList.add("translate-x-8", "opacity-0"); setTimeout(() => toast.remove(), 300); }, 2500);
+/* Format tiền tệ */
+export const formatCurrency = (value) => {
+  return Number(value || 0).toLocaleString("vi-VN") + " đ";
 };
 
-export const capNhatWishlist = () => {
-  el.badgeWishlist.forEach((badgeWishlist) => {
-     badgeWishlist.textContent = state.wishlist.length;
-  })
+/* Tính giá gốc */
+export const getOldPrice = (price) => {
+  return Math.round(Number(price || 0) * 1.14);
 };
 
+/* Tính phần trăm giảm giá */
+export const getDiscountPercent = (price) => {
+  return Math.round(
+    (
+      (getOldPrice(price) - Number(price)) /
+      getOldPrice(price)
+    ) * 100
+  );
+};
 
-window.toggleWishlist = (id) => {
-  const sp = state.danhSachSP.find(p => p.id == id);
-  const strId = String(id);
-  if (state.wishlist.includes(strId)) {
-    state.wishlist = state.wishlist.filter(x => x !== strId);
-    showToast(`Đã bỏ ${sp?.name || "sản phẩm"} khỏi yêu thích`, "warning");
-  } else {
-    state.wishlist.push(strId);
-    showToast(`Đã thêm ${sp?.name || "sản phẩm"} vào yêu thích`);
+/* Lấy rating theo id */
+export const getRating = (id) => {
+  return [4.6, 4.7, 4.8, 4.9, 5.0][Number(id) % 5] || 4.8;
+};
+
+/* Render sao đánh giá */
+export const renderStars = (rating) => {
+  return Array.from(
+    { length: 5 },
+    (_, i) => (
+      i < Math.floor(rating)
+        ? "★"
+        : "☆"
+    )
+  ).join("");
+};
+
+/* ================= TOAST THÔNG BÁO ================= */
+
+/* Lấy màu toast theo loại */
+const getToastColor = (type) => {
+  if (type === "error") {
+    return "bg-red-50 text-red-700 border-red-100";
   }
+
+  if (type === "warning") {
+    return "bg-amber-50 text-amber-700 border-amber-100";
+  }
+
+  return "bg-emerald-50 text-emerald-700 border-emerald-100";
+};
+
+/* Hiển thị toast */
+export const showToast = (
+  message,
+  type = "success"
+) => {
+
+  if (!el.toastContainer) return;
+
+  const toast = createElement("div");
+
+  const color = getToastColor(type);
+
+  toast.className = `min-w-72 max-w-sm p-4 rounded-2xl border shadow-xl ${color} translate-x-8 opacity-0 transition-all duration-300`;
+
+  toast.innerHTML = `
+    <div class="flex gap-3">
+      <b>${type === "error" ? "!" : "✓"}</b>
+
+      <p class="text-sm font-bold">
+        ${message}
+      </p>
+    </div>
+  `;
+
+  el.toastContainer.appendChild(toast);
+
+  /* Animation hiện */
+  setTimeout(() => {
+    toast.classList.remove(
+      "translate-x-8",
+      "opacity-0"
+    );
+  }, 20);
+
+  /* Animation ẩn */
+  setTimeout(() => {
+
+    toast.classList.add(
+      "translate-x-8",
+      "opacity-0"
+    );
+
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
+
+  }, 2500);
+};
+
+/* ================= WISHLIST ================= */
+
+/* Ẩn badge wishlist */
+const hideWishlistBadges = () => {
+  el.badgeWishlist.forEach((badgeWishlist) => {
+    badgeWishlist.classList.add("hidden");
+  });
+};
+
+/* Hiện badge wishlist */
+const showWishlistBadges = () => {
+  el.badgeWishlist.forEach((badgeWishlist) => {
+    badgeWishlist.classList.remove("hidden");
+
+    badgeWishlist.textContent =
+      state.wishlist.length;
+  });
+};
+
+/* Cập nhật wishlist */
+export const capNhatWishlist = () => {
+
+  if (state.wishlist.length === 0) {
+    hideWishlistBadges();
+  }
+  else {
+    showWishlistBadges();
+  }
+
+};
+
+/* Thêm / xóa wishlist */
+window.toggleWishlist = (id) => {
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+  /* Chưa đăng nhập */
+  if (isLoggedIn !== "true") {
+    openRequireLoginPopup();
+    return;
+  }
+
+  const sp = state.danhSachSP.find(
+    (p) => p.id == id
+  );
+
+  const strId = String(id);
+
+  /* Nếu đã tồn tại */
+  if (state.wishlist.includes(strId)) {
+
+    state.wishlist =
+      state.wishlist.filter(
+        (x) => x !== strId
+      );
+
+    showToast(
+      `Đã bỏ ${sp?.name || "sản phẩm"} khỏi yêu thích`,
+      "warning"
+    );
+  }
+
+  /* Nếu chưa tồn tại */
+  else {
+
+    state.wishlist.push(strId);
+
+    showToast(
+      `Đã thêm ${sp?.name || "sản phẩm"} vào yêu thích`
+    );
+  }
+
   luuWishlist();
+
   capNhatWishlist();
 };
 
+/* ================= CAROUSEL ================= */
 
+/* Khởi tạo carousel */
 export const initCarousel = () => {
-  if (!el.carouselTrack ||!el.btnPrevSlide ||!el.btnNextSlide ||!el.carouselDots) return;
 
-  const carouselItems = el.carouselTrack.children;
+  if (
+    !el.carouselTrack ||
+    !el.btnPrevSlide ||
+    !el.btnNextSlide ||
+    !el.carouselDots
+  ) {
+    return;
+  }
+
+  const carouselItems =
+    el.carouselTrack.children;
+
   let autoSlide = null;
-  let isDragging = false;
-  let startX = 0;
-  let dragDistance = 0;
-  // update position
-  const updateCarouselPosition = () => {
-    el.carouselTrack.style.transition = "transform 0.7s ease-out";
-    el.carouselTrack.style.transform =
-      `translateX(-${state.currentSlide * 100}%)`;
-    updateDots();
-  };
 
-  // update dot
+  let isDragging = false;
+
+  let startX = 0;
+
+  let dragDistance = 0;
+
+  /* Cập nhật dot */
   const updateDots = () => {
+
     const dotItems =
       el.carouselDots.querySelectorAll(".dot-item");
+
     dotItems.forEach((dot) => {
-      dot.classList.remove("w-8", "bg-white");
-      dot.classList.add("w-3", "bg-white/40");
+
+      dot.classList.remove(
+        "w-8",
+        "bg-white"
+      );
+
+      dot.classList.add(
+        "w-3",
+        "bg-white/40"
+      );
+
     });
 
     if (dotItems[state.currentSlide]) {
+
       dotItems[state.currentSlide].classList.remove(
         "w-3",
         "bg-white/40"
       );
+
       dotItems[state.currentSlide].classList.add(
         "w-8",
         "bg-white"
@@ -92,157 +270,482 @@ export const initCarousel = () => {
     }
   };
 
-  // create dot
-  const createDots = () => {
-    el.carouselDots.innerHTML = "";
-    for (let index = 0; index < carouselItems.length; index++) {
-      const dot = document.createElement("button");
-      dot.className =
-        "dot-item h-3 w-3 rounded-full bg-white/40 transition-all";
-      dot.addEventListener("click", () => {
-        clearInterval(autoSlide);
-        state.currentSlide = index;
-        updateCarouselPosition();
-        autoSlide = startAutoSlide();
-      });
-      el.carouselDots.appendChild(dot);
-    }
+  /* Cập nhật vị trí slide */
+  const updateCarouselPosition = () => {
+
+    el.carouselTrack.style.transition =
+      "transform 0.7s ease-out";
+
+    el.carouselTrack.style.transform =
+      `translateX(-${state.currentSlide * 100}%)`;
+
     updateDots();
   };
 
-  // auto slide
+  /* Tự động chuyển slide */
   const startAutoSlide = () => {
+
     return setInterval(() => {
+
       state.currentSlide++;
-      if (state.currentSlide > carouselItems.length - 1) {
+
+      if (
+        state.currentSlide >
+        carouselItems.length - 1
+      ) {
         state.currentSlide = 0;
       }
+
       updateCarouselPosition();
+
     }, 4000);
   };
 
-  // next slider
+  /* Tạo dot */
+  const createDots = () => {
+
+    el.carouselDots.innerHTML = "";
+
+    for (
+      let index = 0;
+      index < carouselItems.length;
+      index++
+    ) {
+
+      const dot =
+        createElement("button");
+
+      dot.className =
+        "dot-item h-3 w-3 rounded-full bg-white/40 transition-all";
+
+      dot.addEventListener("click", () => {
+
+        clearInterval(autoSlide);
+
+        state.currentSlide = index;
+
+        updateCarouselPosition();
+
+        autoSlide = startAutoSlide();
+      });
+
+      el.carouselDots.appendChild(dot);
+    }
+
+    updateDots();
+  };
+
+  /* Slide tiếp theo */
   const nextSlide = () => {
+
     state.currentSlide++;
-    if (state.currentSlide > carouselItems.length - 1) {
+
+    if (
+      state.currentSlide >
+      carouselItems.length - 1
+    ) {
       state.currentSlide = 0;
     }
+
     updateCarouselPosition();
   };
 
-  // prev slider
+  /* Slide trước đó */
   const prevSlide = () => {
+
     state.currentSlide--;
+
     if (state.currentSlide < 0) {
-      state.currentSlide = carouselItems.length - 1;
+      state.currentSlide =
+        carouselItems.length - 1;
     }
+
     updateCarouselPosition();
   };
 
-  // start drag
+  /* Bắt đầu kéo */
   const startDrag = (event) => {
+
     clearInterval(autoSlide);
+
     isDragging = true;
+
     startX = event.clientX;
+
     dragDistance = 0;
+
     el.carouselTrack.style.transition = "none";
+
     el.carouselTrack.style.cursor = "grabbing";
   };
 
-  // dragging
+  /* Đang kéo */
   const dragging = (event) => {
-    if (!isDragging) {
-      return;
-    }
-    dragDistance = event.clientX - startX;
-    const carouselWidth = el.carouselTrack.offsetWidth;
-    let dragPercent = (dragDistance / carouselWidth) * 100;
 
-    // hiệu ứng dây thun khi đang ở slide đầu mà kéo ngược
-    if (state.currentSlide === 0 && dragDistance > 0) {
-      dragPercent = dragPercent * 0.25;
+    if (!isDragging) return;
+
+    dragDistance =
+      event.clientX - startX;
+
+    const carouselWidth =
+      el.carouselTrack.offsetWidth;
+
+    let dragPercent =
+      (dragDistance / carouselWidth) * 100;
+
+    /* Hiệu ứng dây thun slide đầu */
+    if (
+      state.currentSlide === 0 &&
+      dragDistance > 0
+    ) {
+      dragPercent *= 0.25;
     }
 
-    // hiệu ứng dây thun khi đang ở slide cuối mà kéo tiếp
-    if (state.currentSlide === carouselItems.length - 1 && dragDistance < 0) {
-      dragPercent = dragPercent * 0.25;
+    /* Hiệu ứng dây thun slide cuối */
+    if (
+      state.currentSlide ===
+        carouselItems.length - 1 &&
+      dragDistance < 0
+    ) {
+      dragPercent *= 0.25;
     }
 
     const translateValue =
-      -state.currentSlide * 100 + dragPercent;
+      -state.currentSlide * 100 +
+      dragPercent;
+
     el.carouselTrack.style.transform =
       `translateX(${translateValue}%)`;
   };
 
-  // end drag
+  /* Kết thúc kéo */
   const endDrag = () => {
-    if (!isDragging) {
-      return;
-    }
+
+    if (!isDragging) return;
+
     isDragging = false;
+
     el.carouselTrack.style.cursor = "grab";
+
     const minDrag = 80;
 
-    // kéo sang trái -> slide tiếp theo
-    if (dragDistance < -minDrag && state.currentSlide < carouselItems.length - 1) {
+    /* Kéo sang trái */
+    if (
+      dragDistance < -minDrag &&
+      state.currentSlide <
+        carouselItems.length - 1
+    ) {
       state.currentSlide++;
     }
 
-    // kéo sang phải -> slide trước đó
-    if (dragDistance > minDrag && state.currentSlide > 0) {
+    /* Kéo sang phải */
+    if (
+      dragDistance > minDrag &&
+      state.currentSlide > 0
+    ) {
       state.currentSlide--;
     }
+
     updateCarouselPosition();
+
     autoSlide = startAutoSlide();
   };
 
-  // add event btnNextSlide and btnPrevSlide
-  el.btnNextSlide.addEventListener("click", () => {
-    clearInterval(autoSlide);
-    nextSlide();
-    autoSlide = startAutoSlide();
-  });
+  /* Click nút next */
+  el.btnNextSlide.addEventListener(
+    "click",
+    () => {
 
-  el.btnPrevSlide.addEventListener("click", () => {
-    clearInterval(autoSlide);
-    prevSlide();
-    autoSlide = startAutoSlide();
-  });
+      clearInterval(autoSlide);
 
-  // add event drag mouse
-  el.carouselTrack.addEventListener("mousedown", startDrag);
-  el.carouselTrack.addEventListener("mousemove", dragging);
-  el.carouselTrack.addEventListener("mouseup", endDrag);
-  el.carouselTrack.addEventListener("mouseleave", endDrag);
+      nextSlide();
+
+      autoSlide = startAutoSlide();
+    }
+  );
+
+  /* Click nút prev */
+  el.btnPrevSlide.addEventListener(
+    "click",
+    () => {
+
+      clearInterval(autoSlide);
+
+      prevSlide();
+
+      autoSlide = startAutoSlide();
+    }
+  );
+
+  /* Event drag */
+  el.carouselTrack.addEventListener(
+    "mousedown",
+    startDrag
+  );
+
+  el.carouselTrack.addEventListener(
+    "mousemove",
+    dragging
+  );
+
+  el.carouselTrack.addEventListener(
+    "mouseup",
+    endDrag
+  );
+
+  el.carouselTrack.addEventListener(
+    "mouseleave",
+    endDrag
+  );
+
   el.carouselTrack.style.cursor = "grab";
+
   createDots();
+
   updateCarouselPosition();
+
   autoSlide = startAutoSlide();
 };
 
+/* ================= ĐẾM NGƯỢC FLASH SALE ================= */
 
+/* Khởi tạo countdown flash sale */
 export const initSaleCountdown = () => {
+
   if (!el.saleHour) return;
+
+  /* Cập nhật countdown */
   const update = () => {
+
     const now = new Date();
+
     const end = new Date();
+
     end.setHours(23, 59, 59, 999);
+
     const diff = end - now;
-    el.saleHour.textContent = String(Math.floor(diff / 3600000)).padStart(2, "0");
-    el.saleMinute.textContent = String(Math.floor((diff / 60000) % 60)).padStart(2, "0");
-    el.saleSecond.textContent = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
+
+    el.saleHour.textContent =
+      String(
+        Math.floor(diff / 3600000)
+      ).padStart(2, "0");
+
+    el.saleMinute.textContent =
+      String(
+        Math.floor((diff / 60000) % 60)
+      ).padStart(2, "0");
+
+    el.saleSecond.textContent =
+      String(
+        Math.floor((diff / 1000) % 60)
+      ).padStart(2, "0");
   };
-  update(); setInterval(update, 1000);
+
+  update();
+
+  setInterval(update, 1000);
 };
 
-window.closeOrOpenMenuMobile = () => {
-  el.contentMenuMobile.classList.toggle("hidden")
-}
+/* ================= MENU MOBILE ================= */
 
+/* Đóng / mở menu mobile */
+window.closeOrOpenMenuMobile = () => {
+  el.contentMenuMobile.classList.toggle("hidden");
+};
+
+/* Tự động đóng menu mobile khi resize */
 export const closeMenuMobileByWidthScreen = () => {
-  window.addEventListener('resize', () => {
-      if (window.innerWidth >= 1024) {
-          el.contentMenuMobile.classList.add('hidden');
-      }
+
+  window.addEventListener("resize", () => {
+
+    if (window.innerWidth >= 1024) {
+      el.contentMenuMobile.classList.add("hidden");
+    }
+
   });
-}
+};
+
+/* ================= HIỂN THỊ TRẠNG THÁI ĐĂNG NHẬP ================= */
+
+/* Lấy các phần tử login */
+const getLoginElements = () => {
+
+  return {
+    loginBtnMobile:
+      selectElement(".loginBtnMobile"),
+
+    loginBtnDesktop:
+      selectElement(".loginBtnDesktop"),
+
+    userProfileMobile:
+      selectElement(".userProfileMobile"),
+
+    userProfileDesktop:
+      selectElement(".userProfileDesktop"),
+  };
+};
+
+/* Hiển thị profile user */
+const showUserProfile = (username) => {
+
+  const {
+    loginBtnMobile,
+    loginBtnDesktop,
+    userProfileMobile,
+    userProfileDesktop,
+  } = getLoginElements();
+
+  loginBtnMobile?.classList.add("hidden");
+
+  loginBtnDesktop?.classList.add("hidden");
+
+  userProfileMobile?.classList.remove("hidden");
+
+  userProfileDesktop?.classList.add("hidden");
+
+  userProfileDesktop?.classList.add("lg:flex");
+
+  el.usernameDisplay.forEach((item) => {
+    item.textContent = username || "User";
+  });
+
+  el.usernameDisplayHover.forEach((itemHover) => {
+    itemHover.textContent = username;
+  });
+};
+
+/* Hiển thị nút đăng nhập */
+const showLoginButtons = () => {
+
+  const {
+    loginBtnMobile,
+    loginBtnDesktop,
+    userProfileMobile,
+    userProfileDesktop,
+  } = getLoginElements();
+
+  loginBtnMobile?.classList.remove("hidden");
+
+  loginBtnDesktop?.classList.remove("hidden");
+
+  loginBtnDesktop?.classList.add("hidden");
+
+  loginBtnDesktop?.classList.add("lg:flex");
+
+  userProfileMobile?.classList.add("hidden");
+
+  userProfileDesktop?.classList.add("hidden");
+};
+
+/* Hiển thị trạng thái đăng nhập */
+export const hienThiTrangThaiDangNhap = () => {
+
+  const isLoggedIn =
+    localStorage.getItem("isLoggedIn");
+
+  const username =
+    localStorage.getItem("username");
+
+  if (isLoggedIn === "true") {
+    showUserProfile(username);
+    enableAuthActions();
+  }
+  else {
+    showLoginButtons();
+    disableAuthActions();
+  }
+};
+
+/* Disable các chức năng cần đăng nhập */
+const disableAuthActions = () => {
+  el.orderCheckLink.forEach((link) => {
+    link.classList.add(
+      "opacity-40",
+      "cursor-not-allowed"
+    );
+    link.classList.remove("hover:text-blue-600")
+    link.style.pointerEvents = "auto";
+  });
+
+  el.btnWishlist.forEach((button) => {
+    button.disabled = true;
+    button.classList.add(
+      "opacity-40",
+      "cursor-not-allowed"
+    );
+    button.classList.remove("hover:text-rose-500", "hover:bg-rose-100", "cursor-pointer");
+  });
+
+  el.btnCartHeader.forEach((button) => {
+    button.disabled = true;
+    button.classList.add(
+      "opacity-40",
+      "cursor-not-allowed"
+    );
+    button.classList.remove("hover:bg-blue-600", "cursor-pointer");
+  });
+};
+
+/* Enable các chức năng sau khi đăng nhập */
+const enableAuthActions = () => {
+  el.orderCheckLink.forEach((link) => {
+    link.classList.remove(
+      "opacity-40",
+      "pointer-events-none",
+      "cursor-not-allowed"
+    );
+  });
+
+  el.btnWishlist.forEach((button) => {
+    button.disabled = false;
+    button.classList.remove(
+      "opacity-40",
+      "cursor-not-allowed"
+    );
+  });
+
+  el.btnCartHeader.forEach((button) => {
+    button.disabled = false;
+    button.classList.remove(
+      "opacity-40",
+      "cursor-not-allowed"
+    );
+  });
+};
+
+
+/* ===== POPUP YÊU CẦU ĐĂNG NHẬP ===== */
+
+export const openRequireLoginPopup = () => {
+  const popup = getElement("popupRequireLogin");
+
+  popup?.classList.remove("hidden");
+};
+
+export const closeRequireLoginPopup = () => {
+  const popup = getElement("popupRequireLogin");
+  popup?.classList.add("hidden");
+};
+
+export const initRequireLoginPopup = () => {
+  const btnClose = getElement("btnCloseRequireLogin");
+
+  const btnLater = getElement("btnLaterLogin");
+
+  const btnGoLogin = getElement("btnGoLogin");
+
+  const overlay = getElement("overlayRequireLogin");
+
+  btnClose?.addEventListener("click", closeRequireLoginPopup);
+
+  btnLater?.addEventListener("click", closeRequireLoginPopup);
+
+  overlay?.addEventListener("click", closeRequireLoginPopup);
+
+  btnGoLogin?.addEventListener("click", () => {
+    window.location.href =
+      isInPageUser()
+        ? "./login.html"
+        : "./page-user/login.html";
+  });
+};

@@ -23,7 +23,7 @@
     <!-- header -->
     <header class="sticky top-0 z-50 bg-gray-100/70 backdrop-blur-2xl border-b border-slate-300">
       <!-- menu mobile -->
-      <div id="contentMenuMobile" class="hidden lg:hidden w-[50%] bg-gray-100 z-50 h-[70vh] backdrop-blur-xl border border-slate-300 rounded-br-2xl mt-20.5 absolute">
+      <div id="contentMenuMobile" class="hidden lg:hidden w-[50%] bg-gray-100 z-50 h-[70vh] max-h-screen overflow-y-auto overscroll-contain pb-6 backdrop-blur-xl border border-slate-300 rounded-br-2xl mt-20.5 absolute">
         <span id="closeMenuMobile" class="absolute text-sm duration-100 cursor-pointer px-3 py-2 rounded-lg right-5 top-5 bg-white border hover:bg-red-500 hover:text-white font-bold" onclick="closeOrOpenMenuMobile()">X</span>
         <div class="p-3 flex flex-col gap-10 mt-5">
           <a href="./index.html" class="duration-100 hover:text-blue-600 font-bold w-22 h-6 text-blue-400">Trang chủ</a>
@@ -37,7 +37,7 @@
               <a href="./page-user/policy-warranty.html" class="block px-4 py-3 rounded-xl hover:bg-slate-100 duration-100 font-bold">Chính sách bảo hành</a>
             </div>
           </div>
-          <a href="./page-user/order-check.html" class="duration-100 hover:text-blue-600 font-bold w-35  h-6">Kiểm tra đơn hàng</a>
+          <a href="./page-user/order-check.html" class="orderCheckLink duration-100 hover:text-blue-600 font-bold w-35  h-6">Kiểm tra đơn hàng</a>
           <hr class="text-slate-400">
           <div class="flex flex-col gap-5 w-full justify-center items-center">
             <!-- wishlist btn -->
@@ -97,7 +97,7 @@
               <a href="./page-user/policy-warranty.html" class="block px-4 py-3 rounded-xl hover:bg-slate-100 duration-100">Chính sách bảo hành</a>
             </div>
           </div>
-          <a href="./page-user/order-check.html" class="duration-100 hover:text-blue-600">Kiểm tra đơn hàng</a>
+          <a href="./page-user/order-check.html" class="duration-100 hover:text-blue-600 orderCheckLink">Kiểm tra đơn hàng</a>
         </nav>
     
         <div class="flex items-center gap-5">
@@ -111,7 +111,7 @@
             <i class="fa-solid fa-bars text-slate-500 text-xl"></i>
           </div>
           
-          <button id="btnGioHang" class="cursor-pointer duration-100 relative bg-slate-900 text-white px-4 md:px-5 py-3 rounded-2xl hover:bg-blue-600 flex items-center gap-2">
+          <button id="btnGioHang" class="btnCartHeader cursor-pointer duration-100 relative bg-slate-900 text-white px-4 md:px-5 py-3 rounded-2xl hover:bg-blue-600 flex items-center gap-2">
             <i class="fa-solid fa-cart-arrow-down"></i>
             <span class="hidden sm:inline font-bold text-sm">Giỏ hàng</span>
             <span id="badgeGioHang" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-black min-w-6 h-6 px-1 rounded-full flex justify-center items-center ring-4 ring-white">0</span>
@@ -207,12 +207,13 @@
         </div>
         <button
           id="btnPrevSlide"
-          class="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20"
+          class="hidden cursor-pointer duration-100 md:block absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20"
         >
-          ‹</button
-        ><button
+          ‹
+        </button>
+        <button
           id="btnNextSlide"
-          class="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20"
+          class="hidden md:block absolute duration-100 cursor-pointer right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20"
         >
           ›
         </button>
@@ -248,14 +249,14 @@
       </div>
     </section>
     <!-- flash sale -->
-    <section id="uu-dai" class="max-w-7xl mx-auto px-4 md:px-6 pb-4">
-      <div class="rounded-[2rem] bg-gradient-to-r from-red-600 to-orange-500 text-white p-5 md:p-7 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl shadow-red-100">
+    <a href="./page-user/promotions.html" id="uu-dai" class="max-w-7xl mx-auto px-4 md:px-6 pb-4">
+      <div class="rounded-[2rem] bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-500 hover:to-orange-600 transition-colors duration-300 cursor-pointer text-white p-5 md:p-7 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl shadow-red-100">
         <div>
           <p class="text-xs font-black uppercase tracking-widest text-red-100">
             Flash Sale
           </p>
           <h2 class="text-2xl md:text-3xl font-black mt-1">
-            Giảm thêm 5% cho đơn hàng hôm nay
+            Giảm mạnh cho đơn hàng hôm nay
           </h2>
           <p class="text-red-100 text-sm mt-2">
             Áp dụng khi thanh toán demo trong giỏ hàng.
@@ -276,7 +277,7 @@
           </div>
         </div>
       </div>
-    </section>
+    </a>
     <!-- main -->
     <main id="san-pham" class="max-w-7xl mx-auto px-4 md:px-6 py-8">
       <div class="mb-8 bg-white p-5 md:p-6 rounded-[2rem] shadow-sm border border-slate-300">
@@ -414,6 +415,88 @@
           <button id="btnCloseWishlist" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-red-500 hover:text-white duration-100 cursor-pointer font-bold"> X </button>
         </div>
         <div id="wishlistContent" class="space-y-4 max-h-[60vh] overflow-y-auto"></div>
+      </div>
+    </div>
+    <!-- Quảng cáo ưu đãi -->
+    <div class="popupPromotion hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
+      <div class="popupPromotionOverlay absolute inset-0 bg-black/50 cursor-pointer"></div>
+      <div class="popupPromotionContent relative w-full max-w-5xl rounded-3xl p-10 scale-75 opacity-0 transition-all duration-300">
+        <div class="flex items-center justify-between">
+          <a href="./page-user/promotions.html">
+            <img src="./images/uudai-image.png" class="border border-slate-300 w-full rounded-3xl" alt="">
+          </a>
+          <button class="btnClosePopupPromotion w-10 h-10 rounded-full bg-slate-100 hover:bg-red-500 hover:text-white duration-100 cursor-pointer font-bold absolute top-0 right-0"> X </button>
+        </div>
+        <div id="wishlistContent" class="space-y-4 max-h-[60vh] overflow-y-auto"></div>
+      </div>
+    </div>
+    <!-- popup mua hàng & thêm giỏ hàng -->
+    <div id="productOptionPopup" class="hidden fixed inset-0 z-[90] flex items-center justify-center p-4">
+      <div id="productOptionOverlay" class="absolute inset-0 bg-black/50"></div>
+
+      <div class="relative bg-white w-full max-w-xl rounded-3xl p-6 shadow-2xl">
+        <button id="btnCloseProductOptionPopup" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-red-500 hover:text-white font-bold cursor-pointer">
+          X
+        </button>
+
+        <h2 id="productOptionTitle" class="text-2xl font-black mb-5">
+          Mua hàng
+        </h2>
+
+        <div id="productOptionContent"></div>
+      </div>
+    </div>
+    <!-- popup yêu cầu đăng nhập -->
+    <div
+      id="popupRequireLogin"
+      class="hidden fixed inset-0 z-[999] flex items-center justify-center p-4"
+    >
+      <div
+        id="overlayRequireLogin"
+        class="absolute inset-0 bg-black/50"
+      ></div>
+
+      <div
+        class="relative bg-white rounded-[2rem] p-8 w-full max-w-md shadow-2xl animate-popup"
+      >
+        <button
+          id="btnCloseRequireLogin"
+          class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-100 hover:bg-red-500 hover:text-white duration-100 font-bold"
+        >
+          X
+        </button>
+
+        <div class="text-center">
+          <div
+            class="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-5"
+          >
+            <i class="fa-solid fa-lock text-3xl text-blue-600"></i>
+          </div>
+
+          <h2 class="text-2xl font-black text-slate-800 mb-3">
+            Bạn chưa đăng nhập
+          </h2>
+
+          <p class="text-slate-500 font-semibold mb-6">
+            Vui lòng đăng nhập để tiếp tục mua hàng hoặc thêm sản phẩm vào giỏ hàng
+          </p>
+
+          <div class="flex flex-col gap-3">
+            <button
+              id="btnGoLogin"
+              class="w-full py-4 rounded-2xl cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-black duration-100"
+            >
+              Đăng nhập ngay
+            </button>
+
+            <button
+              id="btnLaterLogin"
+              class="w-full py-4 rounded-2xl cursor-pointer bg-slate-100 hover:bg-slate-200 font-bold duration-100"
+            >
+              Để sau
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <!-- script js -->

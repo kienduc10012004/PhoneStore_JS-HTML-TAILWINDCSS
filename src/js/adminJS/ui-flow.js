@@ -1,22 +1,58 @@
-import { dom, state, formatCurrency, logOutAdmin, getBrands, saveBrands } from "./core.js";
+/* ================= IMPORT MODULES ================= */
+import { dom, state, formatCurrency, logOutAdmin, getBrands, saveBrands, isInPageAdmin, getElement, selectElements } from "./core.js";
 
+/* ======================= LẤY LINK ẢNH ========================= */
+export const getImageUrl = (img) => {
+  if (!img) {
+    return "";
+  }
+
+  const value = String(img).trim();
+
+  if (value.startsWith("http://") || value.startsWith("https://") || value.startsWith("data:")) return value;
+
+  const hasExtension = /\.(png|jpg|jpeg|webp|gif|svg)$/i.test(value);
+  const imagePath = hasExtension ? value : `${value}.png`;
+  const fileName = imagePath.split("/").pop();
+  const prefix = isInPageAdmin() ? "../images/" : "./images/";
+  return `${prefix}${fileName}`;
+};
+
+/* ================= HIỂN THỊ LỖI FORM ================= */
 const setErrorMessage = (id, message) => {
-  const errorElement = document.getElementById(`error-${id}`);
+  const errorElement = getElement(`error-${id}`);
+
   if (errorElement) {
     errorElement.innerText = message;
   }
 };
 
+/* ================= XÓA TOÀN BỘ LỖI FORM ================= */
 export const clearErrors = () => {
-  document.querySelectorAll(".error-msg").forEach((item) => {
+  selectElements(".error-msg").forEach((item) => {
     item.innerText = "";
   });
 };
 
+/* ================= LẤY DỮ LIỆU TỪ FORM SẢN PHẨM ================= */
 export const getProductDataFromForm = () => {
+  const originalPrice = Number(dom.price.value.trim() || 0);
+  const discountPercent = Number(dom.discountPercent?.value || 0);
+  const hasInstallment = Boolean(dom.hasInstallment?.checked);
+  const installmentPercent = hasInstallment
+    ? Number(dom.installmentPercent?.value || 0)
+    : 0;
+  const finalPrice = discountPercent > 0
+    ? Math.round(originalPrice * (100 - discountPercent) / 100)
+    : originalPrice;
+
   return {
     name: dom.name.value.trim(),
-    price: dom.price.value.trim(),
+    price: String(finalPrice),
+    originalPrice: String(originalPrice),
+    discountPercent: String(discountPercent),
+    hasInstallment,
+    installmentPercent: String(installmentPercent),
     quantity: dom.quantity.value.trim(),
     img: dom.img.value.trim(),
     giftName: dom.giftName.value.trim(),
@@ -25,15 +61,20 @@ export const getProductDataFromForm = () => {
     backCamera: dom.backCamera.value.trim(),
     frontCamera: dom.frontCamera.value.trim(),
     desc: dom.desc.value.trim(),
-    type: dom.type.value.trim()
+    type: dom.type.value.trim(),
+    capacity: dom.capacity.value.trim(),
+    color: dom.color.value.trim(),
   };
 };
 
+/* ================= VALIDATE FORM SẢN PHẨM ================= */
 export const validateForm = () => {
   const data = getProductDataFromForm();
   let isValid = true;
+
   clearErrors();
 
+  /* Kiểm tra trường rỗng */
   for (let key in data) {
     if (data[key] === "") {
       setErrorMessage(key, "Trường này không được để trống");
@@ -41,33 +82,55 @@ export const validateForm = () => {
     }
   }
 
+  /* Kiểm tra giá bán */
   if (data.price !== "" && Number(data.price) <= 0) {
     setErrorMessage("price", "Giá bán phải là số dương");
     isValid = false;
   }
 
+  /* Kiểm tra số lượng */
   if (data.quantity !== "" && Number(data.quantity) < 0) {
     setErrorMessage("quantity", "Số lượng không được âm");
+    isValid = false;
+  }
+
+  if (Number(data.discountPercent) < 0 || Number(data.discountPercent) > 100) {
+    setErrorMessage("discountPercent", "Giảm giá phải từ 0 đến 100");
+    isValid = false;
+  }
+
+  if (data.hasInstallment && Number(data.installmentPercent) <= 0) {
+    setErrorMessage("installmentPercent", "Phần trăm trả góp phải lớn hơn 0");
+    alert("Phần trăm trả góp phải lớn hơn 0");
     isValid = false;
   }
 
   return isValid;
 };
 
+/* ================= RESET FORM SẢN PHẨM ================= */
 export const resetForm = () => {
   if (!dom.productForm) return;
+
   dom.productForm.reset();
   state.editingProduct = null;
+
   clearErrors();
+
+  dom.installmentPercentBox?.classList.add("hidden");
+  if (dom.installmentPercent) dom.installmentPercent.value = "";
+
   dom.btnSave.classList.remove("hidden");
   dom.btnUpdate.classList.add("hidden");
 };
 
+/* ================= THÊM HÃNG MỚI ================= */
 export const addNewTypeOption = () => {
   if (!dom.newType || !dom.type) return;
 
   const newTypeValue = dom.newType.value.trim();
 
+  /* Kiểm tra nhập tên hãng */
   if (newTypeValue === "") {
     alert("Vui lòng nhập tên hãng mới");
     return;
@@ -75,6 +138,7 @@ export const addNewTypeOption = () => {
 
   const brands = getBrands();
 
+  /* Kiểm tra hãng đã tồn tại */
   const existed = brands.some((brand) => {
     return brand.toLowerCase() === newTypeValue.toLowerCase();
   });
@@ -84,9 +148,11 @@ export const addNewTypeOption = () => {
     return;
   }
 
+  /* Lưu hãng mới */
   brands.push(newTypeValue);
   saveBrands(brands);
 
+  /* Render lại select hãng */
   renderBrandSelect();
 
   dom.type.value = newTypeValue;
@@ -95,9 +161,11 @@ export const addNewTypeOption = () => {
   alert("Thêm hãng thành công");
 };
 
+/* ================= RENDER DANH SÁCH SẢN PHẨM ADMIN ================= */
 export const renderDanhSachSP = (danhSachSP) => {
   if (!dom.productTableBody) return;
 
+  /* Không tìm thấy sản phẩm */
   if (!danhSachSP || danhSachSP.length === 0) {
     dom.productTableBody.innerHTML = `
       <tr>
@@ -106,13 +174,22 @@ export const renderDanhSachSP = (danhSachSP) => {
         </td>
       </tr>
     `;
+
     dom.paginationContainer.innerHTML = "";
     return;
   }
 
-  const startIndex = (state.currentPage - 1) * state.itemsPerPage;
-  const currentItems = danhSachSP.slice(startIndex, startIndex + state.itemsPerPage);
+  /* Xử lý phân trang */
+  const startIndex =
+    (state.currentPage - 1) * state.itemsPerPage;
 
+  const currentItems =
+    danhSachSP.slice(
+      startIndex,
+      startIndex + state.itemsPerPage
+    );
+
+  /* Render bảng sản phẩm */
   dom.productTableBody.innerHTML = currentItems.map((phone) => {
     return `
       <tr class="hover:bg-slate-50 border-b border-slate-100 transition-all">
@@ -142,6 +219,8 @@ export const renderDanhSachSP = (danhSachSP) => {
   renderPagination(danhSachSP.length);
 };
 
+
+/* ================= RENDER PHÂN TRANG ADMIN ================= */
 const renderPagination = (totalItems) => {
   const totalPages = Math.ceil(totalItems / state.itemsPerPage);
 
@@ -169,13 +248,14 @@ const renderPagination = (totalItems) => {
   dom.paginationContainer.innerHTML = buttons;
 };
 
+/* ================= KHỞI TẠO CHUNG ADMIN ================= */
 export const initAdminCommon = () => {
   if (dom.btnlogout) {
     dom.btnlogout.addEventListener("click", logOutAdmin);
   }
 };
 
-
+/* ================= RENDER SELECT HÃNG ================= */
 export const renderBrandSelect = () => {
   if (!dom.type) return;
 
@@ -194,16 +274,19 @@ export const renderBrandSelect = () => {
   });
 };
 
+/* ================= XÓA HÃNG ================= */
 export const deleteTypeOption = () => {
   if (!dom.type) return;
 
   const selectedType = dom.type.value.trim();
 
+  /* Kiểm tra đã chọn hãng chưa */
   if (selectedType === "") {
     alert("Vui lòng chọn hãng cần xóa");
     return;
   }
 
+  /* Xác nhận xóa */
   const isConfirm = confirm(
     `Bạn có chắc muốn xóa hãng "${selectedType}" không?`
   );
@@ -212,19 +295,18 @@ export const deleteTypeOption = () => {
 
   const brands = getBrands();
 
+  /* Lọc bỏ hãng cần xóa */
   const newBrands = brands.filter((brand) => {
     return brand.toLowerCase() !== selectedType.toLowerCase();
   });
 
   saveBrands(newBrands);
-
   renderBrandSelect();
-
   dom.type.value = "";
-
   alert("Xóa hãng thành công");
 };
 
+/* ================= MENU ADMIN MOBILE ================= */
 export const initAdminMobileMenu = () => {
   if (
     !dom.btnOpenAdminMenu ||
@@ -235,11 +317,13 @@ export const initAdminMobileMenu = () => {
     return;
   }
 
+  /* Mở / đóng menu */
   const toggleAdminMenu = () => {
     dom.adminMenuOverlay.classList.toggle("hidden");
     dom.adminMobileDrawer.classList.toggle("hidden");
   };
 
+  /* Đóng menu */
   const closeAdminMenu = () => {
     dom.adminMenuOverlay.classList.add("hidden");
     dom.adminMobileDrawer.classList.add("hidden");
@@ -249,9 +333,21 @@ export const initAdminMobileMenu = () => {
   dom.btnCloseAdminMenu.addEventListener("click", closeAdminMenu);
   dom.adminMenuOverlay.addEventListener("click", closeAdminMenu);
 
+  /* Tự đóng menu khi màn hình >= md */
   window.addEventListener("resize", () => {
     if (window.innerWidth >= 768) {
       closeAdminMenu();
     }
   });
+};
+
+
+/* ============ ĐÓNG MỞ LOADING ============== */
+
+export const showAdminLoading = () => {
+  dom.adminLoading?.classList.remove("hidden");
+};
+
+export const hideAdminLoading = () => {
+  dom.adminLoading?.classList.add("hidden");
 };

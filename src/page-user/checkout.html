@@ -14,7 +14,7 @@
     <!-- header -->
     <header class="sticky top-0 z-50 bg-gray-100/70 backdrop-blur-2xl border-b border-slate-300">
       <!-- menu mobile -->
-      <div id="contentMenuMobile" class="hidden lg:hidden w-[50%] bg-gray-100 z-50 h-[70vh] backdrop-blur-xl border border-slate-300 rounded-br-2xl mt-20.5 absolute">
+      <div id="contentMenuMobile" class="hidden lg:hidden w-[50%] bg-gray-100 z-50 h-[70vh] max-h-screen overflow-y-auto overscroll-contain pb-6 backdrop-blur-xl border border-slate-300 rounded-br-2xl mt-20.5 absolute">
         <span id="closeMenuMobile" class="absolute text-sm duration-100 cursor-pointer px-3 py-2 rounded-lg right-5 top-5 bg-white border hover:bg-red-500 hover:text-white font-bold" onclick="closeOrOpenMenuMobile()">X</span>
         <div class="p-3 flex flex-col gap-10 mt-5">
           <a href="../index.html" class="duration-100 hover:text-blue-600 font-bold w-22 h-6">Trang chủ</a>
@@ -165,9 +165,9 @@
             </div>
           </div>
 
-          <div id="storeBox" class="bg-slate-50 rounded-2xl p-5">
+          <div id="storeBox" class="bg-slate-50 rounded-2xl border p-5">
             <h3 class="font-black mb-3">Hệ thống cửa hàng</h3>
-            <select id="storeSelect" class="w-full bg-transparent outline-none font-bold">
+            <select id="storeSelect" class="w-full bg-transparent border border-slate-300 p-3 rounded-2xl outline-none font-bold">
               <option>q.Bình Tân - tp.Hồ Chí Minh</option>
               <option>q.Gò Vấp - tp.Hồ Chí Minh</option>
               <option>q.Tân Phú - tp.Hồ Chí Minh</option>
@@ -198,6 +198,7 @@
               <label class="border rounded-2xl p-4 cursor-pointer"><input type="radio" name="paymentMethod" value="Ngân hàng/Momo" /> Ngân hàng/Momo</label>
             </div>
           </div>
+          
 
           <div>
             <label class="font-bold text-sm">Ghi chú</label>

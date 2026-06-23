@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>KienPhone - Chi tiết đơn hàng</title>
+
+    <link rel="icon" href="../images/logoweb.png" />
+    <link rel="stylesheet" href="../output.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+  </head>
+
+  <body class="bg-slate-50 min-h-screen font-sans">
+    <!-- small mobile menu button -->
+    <button
+      id="btnOpenAdminMenu"
+      class="md:hidden fixed bottom-5 right-5 z-[70] w-14 h-14 rounded-full bg-indigo-600 text-white shadow-2xl font-black"
+    >
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <!-- small mobile overlay -->
+    <div
+      id="adminMenuOverlay"
+      class="hidden md:hidden fixed inset-0 z-[80] bg-black/50"
+    ></div>
+
+    <!-- small mobile drawer -->
+    <div id="adminMobileDrawer" class="hidden md:hidden fixed top-0 left-0 z-[90] h-[70vh] max-h-screen w-[70%] bg-slate-950 text-white rounded-br-3xl shadow-2xl p-5 overflow-y-auto overscroll-contain">
+      <button id="btnCloseAdminMenu" class="absolute top-4 right-4 text-xl cursor-pointer w-10 h-10 rounded-xl bg-white/10 hover:bg-red-500 duration-100">
+        X
+      </button>
+
+      <a href="./dashboard.html" class="flex items-center gap-3 mt-3 mb-8">
+        <img src="../images/logoweb.png" class="w-12" alt="" />
+        <div>
+          <h1 class="text-xl font-black">KienPhone</h1>
+          <p class="text-xs text-slate-400">Admin Panel</p>
+        </div>
+      </a>
+
+      <nav class="space-y-2 font-bold text-sm">
+        <a href="./dashboard.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">
+          Dashboard
+        </a>
+
+        <a href="./manage-product.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">
+          Quản lý sản phẩm
+        </a>
+
+        <a href="./manage-order.html" class="block px-4 py-3 rounded-xl bg-indigo-600">
+          Quản lý đơn hàng
+        </a>
+
+        <a href="./manage-user.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">
+          Quản lý người dùng
+        </a>
+
+        <a href="./manage-return.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">
+          Quản lý đổi trả
+        </a>
+
+        <a href="./manage-review.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">
+          Quản lý đánh giá
+        </a>
+
+        <a href="./admin-profile.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">
+          Thông tin admin
+        </a>
+      </nav>
+    </div>
+
+    
+    <div class="flex min-h-screen">
+      <aside class="w-64 bg-slate-950 text-white hidden lg:flex flex-col p-5 sticky top-0 min-h-screen max-h-screen overflow-y-auto">
+        <a href="./dashboard.html" class="flex items-center gap-3 mb-8">
+          <img src="../images/logoweb.png" class="w-12" alt="" />
+          <div><h1 class="text-xl font-black">KienPhone</h1><p class="text-xs text-slate-400">Admin Panel</p></div>
+        </a>
+        <nav class="space-y-2 font-bold text-sm">
+          <a href="./dashboard.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Dashboard</a>
+          <a href="./manage-product.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Quản lý sản phẩm</a>
+          <a href="./manage-order.html" class="block px-4 py-3 rounded-xl bg-indigo-600">Quản lý đơn hàng</a>
+          <a href="./manage-user.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Quản lý người dùng</a>
+          <a href="./manage-return.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Quản lý đổi trả</a>
+          <a href="./manage-review.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Quản lý đánh giá</a>
+          <a href="./admin-profile.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Thông tin admin</a>
+        </nav>
+      </aside>
+
+      <!-- mobile admin menu -->
+      <div class="hidden md:block lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950 text-white border-t border-slate-800">
+        <div class="grid grid-cols-7 text-[11px] font-bold">
+          <a href="./dashboard.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+          </a>
+
+          <a href="./manage-product.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
+            <i class="fa-solid fa-mobile-screen"></i>
+            <span>Sản phẩm</span>
+          </a>
+
+          <a href="./manage-order.html" class="py-3 flex flex-col items-center gap-1  text-indigo-400">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Đơn hàng</span>
+          </a>
+
+          <a href="./manage-user.html" class="py-3 flex flex-col items-center gap-1 ">
+            <i class="fa-solid fa-users"></i>
+            <span>User</span>
+          </a>
+
+          <a href="./manage-return.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
+            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+            <span>Đổi trả</span>
+          </a>
+
+          <a href="./manage-review.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
+            <i class="fa-solid fa-star"></i>
+            <span>Đánh giá</span>
+          </a>
+
+          <a href="./admin-profile.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
+            <i class="fa-solid fa-user-gear"></i>
+            <span>Admin</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="flex-1">
+        <header class="bg-white border-b border-slate-200 p-4 sticky top-0 z-10">
+          <div class="flex justify-between items-center">
+            <div><h2 class="text-2xl font-black">Quản lý sản phẩm</h2><p class="text-sm text-slate-400 font-bold">Thêm, sửa, xóa sản phẩm</p></div>
+            <button id="btnlogout" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold cursor-pointer hover:bg-indigo-700 duration-100">Đăng xuất</button>
+          </div>
+        </header>
+
+    <!-- ================= MAIN CHI TIẾT ĐƠN HÀNG ================= -->
+    <main class="max-w-7xl mx-auto p-4 md:p-8">
+      <a href="./manage-order.html" class="inline-block mb-5 font-bold text-indigo-600">
+        <i class="fa-solid fa-arrow-left"></i>
+        Quay lại đơn hàng
+      </a>
+
+      <h1 class="text-3xl font-black mb-6">
+        Chi tiết đơn hàng
+      </h1>
+
+      <div id="orderDetailBox"></div>
+    </main>
+
+    <!-- ================= POPUP LÝ DO HỦY ADMIN ================= -->
+    <div
+      id="adminCancelPopup"
+      class="hidden fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4"
+    >
+      <div class="bg-white rounded-3xl p-6 w-full max-w-md">
+        <h2 class="text-xl font-black mb-4">
+          Lý do hủy hàng
+        </h2>
+
+        <label class="font-bold text-sm">
+          Lý do hủy hàng
+        </label>
+
+        <input
+          id="adminCancelReason"
+          type="text"
+          class="w-full mt-2 border rounded-xl px-4 py-3 outline-none"
+          placeholder="Nhập lý do hủy hàng"
+        />
+
+        <div class="flex gap-3 mt-5">
+          <button
+            id="btnConfirmAdminCancel"
+            class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl"
+          >
+            Xác nhận hủy
+          </button>
+
+          <button
+            id="btnCloseAdminCancel"
+            class="flex-1 bg-slate-200 hover:bg-slate-300 font-bold py-3 rounded-xl"
+          >
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="../js/adminJS/order-detail-flow.js"></script>
+    <script type="module" src="../js/admin.js"></script>
+  </body>
+</html>

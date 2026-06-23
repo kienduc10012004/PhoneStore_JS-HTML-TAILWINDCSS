@@ -25,8 +25,8 @@
     ></div>
 
     <!-- small mobile drawer -->
-    <div id="adminMobileDrawer" class="hidden md:hidden fixed top-0 left-0 z-[90] h-[70vh] w-[70%] bg-slate-950 text-white rounded-br-3xl shadow-2xl p-5">
-      <button id="btnCloseAdminMenu" class="absolute bottom-10 text-xl cursor-pointer left-[50%] translate-x-[-50%] w-20 h-20 rounded-xl bg-white/10 hover:bg-red-500 duration-100">
+    <div id="adminMobileDrawer" class="hidden md:hidden fixed top-0 left-0 z-[90] h-[70vh] max-h-screen w-[70%] bg-slate-950 text-white rounded-br-3xl shadow-2xl p-5 overflow-y-auto overscroll-contain">
+      <button id="btnCloseAdminMenu" class="absolute top-4 right-4 text-xl cursor-pointer w-10 h-10 rounded-xl bg-white/10 hover:bg-red-500 duration-100">
         X
       </button>
 
@@ -55,6 +55,14 @@
           Quản lý người dùng
         </a>
 
+        <a href="./manage-return.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">
+          Quản lý đổi trả
+        </a>
+
+        <a href="./manage-review.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">
+          Quản lý đánh giá
+        </a>
+
         <a href="./admin-profile.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">
           Thông tin admin
         </a>
@@ -63,7 +71,7 @@
 
     <!-- mobile admin menu -->
     <div class="hidden md:block lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950 text-white border-t border-slate-800">
-      <div class="grid grid-cols-5 text-[11px] font-bold">
+      <div class="grid grid-cols-7 text-[11px] font-bold">
         <a href="./dashboard.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
           <i class="fa-solid fa-chart-line"></i>
           <span>Dashboard</span>
@@ -84,6 +92,16 @@
           <span>User</span>
         </a>
 
+        <a href="./manage-return.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <span>Đổi trả</span>
+        </a>
+
+        <a href="./manage-review.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
+          <i class="fa-solid fa-star"></i>
+          <span>Đánh giá</span>
+        </a>
+
         <a href="./admin-profile.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
           <i class="fa-solid fa-user-gear"></i>
           <span>Admin</span>
@@ -93,7 +111,7 @@
 
     <div class="flex min-h-screen">
       <!-- sidebar desktop -->
-      <aside class="w-64 bg-slate-950 text-white hidden lg:flex flex-col p-5">
+      <aside class="w-64 bg-slate-950 text-white hidden lg:flex flex-col p-5 sticky top-0 min-h-screen max-h-screen overflow-y-auto">
         <a href="./dashboard.html" class="flex items-center gap-3 mb-8">
           <img src="../images/logoweb.png" class="w-12" alt="" />
           <div>
@@ -107,6 +125,8 @@
           <a href="./manage-product.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Quản lý sản phẩm</a>
           <a href="./manage-order.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Quản lý đơn hàng</a>
           <a href="./manage-user.html" class="block px-4 py-3 rounded-xl bg-indigo-600">Quản lý người dùng</a>
+          <a href="./manage-return.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Quản lý đổi trả</a>
+          <a href="./manage-review.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Quản lý đánh giá</a>
           <a href="./admin-profile.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Thông tin admin</a>
         </nav>
       </aside>
@@ -131,6 +151,13 @@
           </div>
         </header>
 
+        <!-- loading -->
+        <div id="adminLoading" class="hidden fixed inset-0 z-[200] bg-white/70 backdrop-blur-sm flex items-center justify-center">
+          <div class="text-center">
+            <i class="fa-solid fa-spinner fa-spin text-4xl text-indigo-600"></i>
+            <p class="mt-4 font-black text-slate-600">Đang tải dữ liệu...</p>
+          </div>
+        </div>
         <!-- main -->
         <main class="p-4 sm:p-5 lg:p-8">
           <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
@@ -163,14 +190,14 @@
               <table class="w-full min-w-[1000px] text-left">
                 <thead>
                   <tr class="border-b text-xs text-slate-400 uppercase">
-                    <th class="p-4 text-center whitespace-nowrap">Tên đăng nhập</th>
+                    <th class="p-4 whitespace-nowrap">Tên đăng nhập</th>
                     <th class="p-4 text-center whitespace-nowrap">Email</th>
                     <th class="p-4 text-center whitespace-nowrap">SĐT</th>
-                    <th class="p-4 text-center whitespace-nowrap">Ngày tạo</th>
-                    <th class="p-4 text-center whitespace-nowrap">Vai trò</th>
+                    <th class="p-4  whitespace-nowrap text-center">Ngày tạo</th>
+                    <th class="p-4  whitespace-nowrap">Vai trò</th>
                     <th class="p-4 text-center whitespace-nowrap">Mật khẩu</th>
-                    <th class="p-4 text-center whitespace-nowrap">Trạng thái</th>
-                    <th class="p-4 text-center whitespace-nowrap">Thao tác</th>
+                    <th class="p-4  whitespace-nowrap text-center">Trạng thái</th>
+                    <th class="p-4  whitespace-nowrap text-center">Thao tác</th>
                   </tr>
                 </thead>
 
@@ -187,7 +214,7 @@
     </div>
 
     <!-- popup admin account -->
-    <div
+    <form
       id="adminPasswordPopup"
       class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4"
     >
@@ -204,7 +231,7 @@
         <div class="space-y-4">
           <input
             id="popupAdminUsername"
-            type="password"
+            type="text"
             placeholder="Tên đăng nhập admin"
             class="w-full border border-slate-200 rounded-2xl px-5 py-4 outline-none"
           />
@@ -233,7 +260,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </form>
 
     <script type="module" src="../js/admin.js"></script>
   </body>

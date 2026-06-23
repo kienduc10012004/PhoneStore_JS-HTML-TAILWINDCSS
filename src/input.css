@@ -1,2 +1,19 @@
 body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+@keyframes slideOutCart {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(120px);
+  }
+}
+
+.animate-cart-remove {
+  animation: slideOutCart 0.35s ease forwards;
+}
+
 @import "tailwindcss"

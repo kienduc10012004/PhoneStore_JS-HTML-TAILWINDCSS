@@ -26,8 +26,8 @@
     ></div>
 
     <!-- small mobile drawer -->
-    <div id="adminMobileDrawer" class="hidden md:hidden fixed top-0 left-0 z-[90] h-[70vh] w-[70%] bg-slate-950 text-white rounded-br-3xl shadow-2xl p-5">
-      <button id="btnCloseAdminMenu" class="absolute bottom-10 text-xl cursor-pointer left-[50%] translate-x-[-50%] w-20 h-20 rounded-xl bg-white/10 hover:bg-red-500 duration-100">
+    <div id="adminMobileDrawer" class="hidden md:hidden fixed top-0 left-0 z-[90] h-[70vh] max-h-screen w-[70%] bg-slate-950 text-white rounded-br-3xl shadow-2xl p-5 overflow-y-auto overscroll-contain">
+      <button id="btnCloseAdminMenu" class="absolute top-4 right-4 text-xl cursor-pointer w-10 h-10 rounded-xl bg-white/10 hover:bg-red-500 duration-100">
         X
       </button>
 
@@ -56,43 +56,22 @@
           Quản lý người dùng
         </a>
 
+        <a href="./manage-return.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">
+          Quản lý đổi trả
+        </a>
+
+        <a href="./manage-review.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">
+          Quản lý đánh giá
+        </a>
+
         <a href="./admin-profile.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">
           Thông tin admin
         </a>
       </nav>
     </div>
 
-    <!-- mobile admin menu -->
-    <div class="hidden md:block lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950 text-white border-t border-slate-800">
-      <div class="grid grid-cols-5 text-[11px] font-bold">
-        <a href="./dashboard.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
-          <i class="fa-solid fa-chart-line"></i>
-          <span>Dashboard</span>
-        </a>
-
-        <a href="./manage-product.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
-          <i class="fa-solid fa-mobile-screen"></i>
-          <span>Sản phẩm</span>
-        </a>
-
-        <a href="./manage-order.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
-          <i class="fa-solid fa-receipt"></i>
-          <span>Đơn hàng</span>
-        </a>
-
-        <a href="./manage-user.html" class="py-3 flex flex-col items-center gap-1 text-indigo-400">
-          <i class="fa-solid fa-users"></i>
-          <span>User</span>
-        </a>
-
-        <a href="./admin-profile.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
-          <i class="fa-solid fa-user-gear"></i>
-          <span>Admin</span>
-        </a>
-      </div>
-    </div>
     <div class="flex min-h-screen">
-      <aside class="w-64 bg-slate-950 text-white hidden lg:flex flex-col p-5">
+      <aside class="w-64 bg-slate-950 text-white hidden lg:flex flex-col p-5 sticky top-0 min-h-screen max-h-screen overflow-y-auto">
         <a href="./dashboard.html" class="flex items-center gap-3 mb-8">
           <img src="../images/logoweb.png" class="w-12" alt="" />
           <div><h1 class="text-xl font-black">KienPhone</h1><p class="text-xs text-slate-400">Admin Panel</p></div>
@@ -102,19 +81,21 @@
           <a href="./manage-product.html" class="block px-4 py-3 rounded-xl bg-indigo-600">Quản lý sản phẩm</a>
           <a href="./manage-order.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Quản lý đơn hàng</a>
           <a href="./manage-user.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Quản lý người dùng</a>
+          <a href="./manage-return.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Quản lý đổi trả</a>
+          <a href="./manage-review.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Quản lý đánh giá</a>
           <a href="./admin-profile.html" class="block px-4 py-3 rounded-xl hover:bg-white/10">Thông tin admin</a>
         </nav>
       </aside>
 
       <!-- mobile admin menu -->
       <div class="hidden md:block lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950 text-white border-t border-slate-800">
-        <div class="grid grid-cols-5 text-[11px] font-bold">
+        <div class="grid grid-cols-7 text-[11px] font-bold">
           <a href="./dashboard.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
             <i class="fa-solid fa-chart-line"></i>
             <span>Dashboard</span>
           </a>
 
-          <a href="./manage-product.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
+          <a href="./manage-product.html" class="py-3 flex flex-col items-center gap-1  text-indigo-400">
             <i class="fa-solid fa-mobile-screen"></i>
             <span>Sản phẩm</span>
           </a>
@@ -124,9 +105,19 @@
             <span>Đơn hàng</span>
           </a>
 
-          <a href="./manage-user.html" class="py-3 flex flex-col items-center gap-1 text-indigo-400">
+          <a href="./manage-user.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
             <i class="fa-solid fa-users"></i>
             <span>User</span>
+          </a>
+
+          <a href="./manage-return.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
+            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+            <span>Đổi trả</span>
+          </a>
+
+          <a href="./manage-review.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
+            <i class="fa-solid fa-star"></i>
+            <span>Đánh giá</span>
           </a>
 
           <a href="./admin-profile.html" class="py-3 flex flex-col items-center gap-1 text-slate-300 hover:text-white">
@@ -144,6 +135,15 @@
           </div>
         </header>
 
+
+
+        <!-- loading -->
+        <div id="adminLoading" class="hidden fixed inset-0 z-[200] bg-white/70 backdrop-blur-sm flex items-center justify-center">
+          <div class="text-center">
+            <i class="fa-solid fa-spinner fa-spin text-4xl text-indigo-600"></i>
+            <p class="mt-4 font-black text-slate-600">Đang tải dữ liệu...</p>
+          </div>
+        </div>
         <main class="p-5 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
           <section class="lg:col-span-4">
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 sticky top-24">
@@ -165,6 +165,26 @@
                     <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Số lượng</label>
                     <input id="quantity" type="number" class="w-full border rounded-xl px-4 py-2.5 outline-none bg-slate-50" placeholder="Số lượng" />
                     <p id="error-quantity" class="error-msg text-red-500 text-sm mt-1"></p>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Giảm giá (%)</label>
+                    <input id="discountPercent" type="number" min="0" max="100" class="w-full border rounded-xl px-4 py-2.5 outline-none bg-slate-50" placeholder="0" />
+                    <p id="error-discountPercent" class="error-msg text-red-500 text-sm mt-1"></p>
+                  </div>
+
+                  <div>
+                    <label class="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase mb-1  cursor-pointer">
+                      <input id="hasInstallment" type="checkbox" class="w-4 h-4 accent-indigo-600" />
+                      Có trả góp
+                    </label>
+
+                    <div id="installmentPercentBox" class="hidden">
+                      <input id="installmentPercent" type="number" min="1" class="w-full border rounded-xl px-4 py-2.5 outline-none bg-slate-50" placeholder="Phần trăm trả góp" />
+                      <p id="error-installmentPercent" class="error-msg text-red-500 text-sm mt-1"></p>
+                    </div>
                   </div>
                 </div>
 
@@ -241,7 +261,36 @@
                     />
                     <p id="error-giftImg" class="error-msg text-red-500 text-sm mt-1"></p>
                   </div>
-</div>
+                </div>
+
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">
+                      Dung lượng
+                    </label>
+                    <input
+                      id="capacity"
+                      type="text"
+                      class="w-full border rounded-xl px-4 py-2.5 outline-none bg-slate-50"
+                      placeholder="512GB, 256GB, 128GB, 64GB"
+                    />
+                    <p id="error-capacity" class="error-msg text-red-500 text-sm mt-1"></p>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">
+                      Màu sắc
+                    </label>
+                    <input
+                      id="color"
+                      type="text"
+                      class="w-full border rounded-xl px-4 py-2.5 outline-none bg-slate-50"
+                      placeholder="Đen, Xanh, Vàng"
+                    />
+                    <p id="error-color" class="error-msg text-red-500 text-sm mt-1"></p>
+                  </div>
+                </div>
 
                 <div class="flex gap-2 pt-4">
                   <button type="submit" id="btnSave" class="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 cursor-pointer duration-100">Tạo mới</button>

@@ -1,9 +1,11 @@
-import { API, el, state, capNhatSoLuongGioHang, productDetailUrl, isInPageUser } from "./core.js";
+/* ==================== IMPORT MODULES / HÀM CHỨC NĂNG ==================== */
+import { API, el, state, capNhatSoLuongGioHang, productDetailUrl, isInPageUser, getElement } from "./core.js";
 import { bindPopupEvents } from "./popup-flow.js";
 import { renderGioHang } from "./cart-flow.js";
-import { formatCurrency, initCarousel, getImageUrl, getRating, getOldPrice, getDiscountPercent, renderStars } from "./ui-flow.js";
+import { formatCurrency, initCarousel, getImageUrl, renderStars } from "./ui-flow.js";
 import { initWishlistPopup } from "./wishlist-popup.js";
 
+/* ====================KIỂM TRA SẢN PHẨM CÓ QUÀ TẶNG ƯU ĐÃI HAY KHÔNG ================== */
 const hasGift = (product) => {
   return (
     product.giftName &&
@@ -13,12 +15,17 @@ const hasGift = (product) => {
   );
 };
 
+/*============================= RENDER DANH SÁCH SẢN PHẨM ƯU ĐÃI ============================== */
 const renderPromo = (list) => {
+  /* Nếu trang hiện tại không có khu vực promoProducts thì dừng */
   if (!el.promoProducts) return;
 
+  /* Tính phân trang */
   const total = Math.ceil(list.length / state.itemsPerPage);
   const start = (state.currentPage - 1) * state.itemsPerPage;
   const current = list.slice(start, start + state.itemsPerPage);
+
+  /* ========================= TRƯỜNG HỢP KHÔNG CÓ SẢN PHẨM ƯU ĐÃI ===================== */
 
   if (current.length === 0) {
     el.promoProducts.innerHTML = `
@@ -32,19 +39,25 @@ const renderPromo = (list) => {
       </div>
     `;
 
-    const box = document.getElementById("pagination");
-
+    const box = getElement("pagination");
     if (box) {
       box.innerHTML = "";
     }
-
     return;
   }
 
+  /* ========================== RENDER CARD SẢN PHẨM ƯU ĐÃI =============================== */
+
   el.promoProducts.innerHTML = current.map((p) => {
-    const rating = getRating(p.id);
-    const oldPrice = getOldPrice(p.price);
-    const discount = getDiscountPercent(p.price);
+
+    /* Lấy thông tin hiển thị cho từng sản phẩm */
+    const hasStoredReviews = Array.isArray(p.reviews) && p.reviews.length > 0;
+    const rating = Number(p.rating || 0) || (!hasStoredReviews && p.defaultReviewInitialized !== true ? 5 : 0);
+    const oldPrice = Number(p.originalPrice || p.price);
+    const discount = Number(p.discountPercent || 0);
+    const installment = p.hasInstallment && Number(p.installmentPercent || 0) > 0
+      ? Number(p.installmentPercent)
+      : 0;
     const isWish = state.wishlist.includes(String(p.id));
     const isOutOfStock = Number(p.quantity || 0) <= 0;
 
@@ -54,9 +67,15 @@ const renderPromo = (list) => {
         <a href="${productDetailUrl(p.id)}" class="block">
           
           <!-- Badge giảm giá -->
-          <div class="absolute top-4 left-4 z-10 bg-red-500 text-white text-[11px] font-black px-3 py-1.5 rounded-full">
-            -${discount}%
-          </div>
+          ${
+            discount > 0
+              ? `
+                <div class="absolute top-4 left-4 z-10 bg-red-500 text-white text-[11px] font-black px-3 py-1.5 rounded-full">
+                  -${discount}%
+                </div>
+              `
+              : ""
+          }
 
           <!-- Hình ảnh sản phẩm -->
           <div class="bg-slate-50 rounded-[1.5rem] p-6 mb-5 flex justify-center overflow-hidden h-56">
@@ -78,8 +97,8 @@ const renderPromo = (list) => {
           <!-- Giá tiền -->
           <p class="text-red-500 font-black text-xl">${formatCurrency(p.price)}</p>
           <div class="flex items-center gap-2 mt-1">
-            <p class="text-slate-400 line-through text-sm font-bold">${formatCurrency(oldPrice)}</p>
-            <p class="text-emerald-600 text-xs font-black">Trả góp 0%</p>
+            ${discount > 0 ? `<p class="text-slate-400 line-through text-sm font-bold">${formatCurrency(oldPrice)}</p>` : ""}
+            ${installment > 0 ? `<p class="text-emerald-600 text-xs font-black">Trả góp ${installment}%</p>` : ""}
           </div>
         </a>
 
@@ -114,10 +133,10 @@ const renderPromo = (list) => {
             : `
               <!-- Nút hành động -->
               <div class="grid grid-cols-2 gap-2 mt-4">
-                <a href="${isInPageUser() ? `./checkout.html?id=${p.id}` : `./page-user/checkout.html?id=${p.id}`}" class="text-center bg-slate-100 cursor-pointer text-slate-700 font-black py-3 rounded-2xl text-xs hover:bg-slate-200">
+                <button onclick="openProductOptionPopup('${p.id}', 'buy')" class="text-center bg-slate-100 cursor-pointer text-slate-700 font-black py-3 rounded-2xl text-xs hover:bg-slate-200">
                   Mua
-                </a>
-                <button onclick="themVaoGioHang('${p.id}')" class="bg-blue-600 text-white cursor-pointer font-black py-3 rounded-2xl text-xs hover:bg-blue-700 shadow-lg shadow-blue-100">
+                </button>
+                <button onclick="openProductOptionPopup('${p.id}', 'cart')" class="bg-blue-600 text-white cursor-pointer font-black py-3 rounded-2xl text-xs hover:bg-blue-700 shadow-lg shadow-blue-100">
                   Thêm giỏ
                 </button>
               </div>
@@ -125,12 +144,13 @@ const renderPromo = (list) => {
         }
       </div>
     `;
-  }).join("");
+  }).join("");  
 
-  const box = document.getElementById("pagination");
+  /* ========================== RENDER PHÂN TRANG ======================= */
+
+  const box = getElement("pagination");
 
   if (!box) return;
-
   if (total <= 1) {
     box.innerHTML = "";
     return;
@@ -141,35 +161,52 @@ const renderPromo = (list) => {
   `).join("");
 };
 
+/* ====================== CHUYỂN TRANG SẢN PHẨM ƯU ĐÃI ================================= */
+
 window.changePromoPage = (p) => {
   state.currentPage = p;
   renderPromo(state.activeList);
-  document.getElementById("uu-dai")?.scrollIntoView({ behavior: "smooth" });
+  getElement("uu-dai")?.scrollIntoView({ behavior: "smooth" });
 };
 
+/* ========================= LOAD DỮ LIỆU TRANG ƯU ĐÃI ========================= */
+
 const load = async () => {
+
+  /* Khởi tạo sự kiện popup */
   bindPopupEvents();
+
+  /* Khởi tạo carousel */
   initCarousel();
+
+  /* Cập nhật số lượng giỏ hàng */
   capNhatSoLuongGioHang();
 
-  document.getElementById("btnGioHang")?.addEventListener("click", () => {
+  /* Mở popup giỏ hàng */
+  getElement("btnGioHang")?.addEventListener("click", () => {
     renderGioHang();
   });
 
+  /* Lấy danh sách sản phẩm từ API */
   const res = await axios.get(API);
 
-  state.danhSachSP = Array.isArray(res.data)
-    ? res.data
-    : [];
+  state.danhSachSP = Array.isArray(res.data) ? res.data : [];
 
+  /* Lọc ra các sản phẩm có quà tặng ưu đãi */
   state.activeList = state.danhSachSP.filter((product) => {
     return hasGift(product);
   });
 
+  /* Reset về trang đầu tiên */
   state.currentPage = 1;
 
+  /* Render danh sách ưu đãi */
   renderPromo(state.activeList);
 };
 
+/* ========================= KHỞI CHẠY TRANG ƯU ĐÃI ========================== */
+
 load();
+
+/* Khởi tạo popup wishlist */
 initWishlistPopup();

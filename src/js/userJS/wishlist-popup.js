@@ -1,31 +1,49 @@
+/* ============================================ IMPORT MODULES / HÀM CHỨC NĂNG ============================================ */
+
 // import { API, state, luuWishlist, el } from "./core.js";
+
 import { API, state, luuWishlist, el, getUserWishlistKey } from "./core.js";
 import { getImageUrl, formatCurrency, capNhatWishlist } from "./ui-flow.js";
 
+/* ============================================ KHỞI TẠO POPUP WISHLIST ============================================ */
+
 export const initWishlistPopup = () => {
 
-  if (!el.popupWishlist || !el.overlayWishlist || !el.btnCloseWishlist || !el.btnWishlist ||!el.wishlistContent) {
-    return;
-  }
+  /* Kiểm tra các DOM cần thiết có tồn tại không */
+  if (!el.popupWishlist || !el.overlayWishlist || !el.btnCloseWishlist || !el.btnWishlist || !el.wishlistContent) return;
 
+  /* LẤY DANH SÁCH SẢN PHẨM NẾU CHƯA CÓ */
   const layDanhSachSanPhamNeuCan = async () => {
     if (state.danhSachSP.length > 0) {
       return;
     }
+
     try {
       const res = await axios.get(API);
-      state.danhSachSP = Array.isArray(res.data) ? res.data : [];
+      state.danhSachSP = Array.isArray(res.data)
+        ? res.data
+        : [];
     } catch (error) {
       state.danhSachSP = [];
     }
   };
 
+
+  /* RENDER DANH SÁCH SẢN PHẨM YÊU THÍCH */
   const renderWishlist = async () => {
+    /* Đảm bảo có danh sách sản phẩm để đối chiếu id wishlist */
     await layDanhSachSanPhamNeuCan();
-    // const wishlistIds = JSON.parse(localStorage.getItem("WISHLIST_USER")) || [];
+
+    /* Lấy danh sách id sản phẩm yêu thích theo từng tài khoản */
     const wishlistIds = JSON.parse(localStorage.getItem(getUserWishlistKey())) || [];
+
+    /* Đồng bộ wishlist từ localStorage vào state */
     state.wishlist = wishlistIds;
+
+    /* Cập nhật số lượng badge wishlist */
     capNhatWishlist();
+
+    /* TRƯỜNG HỢP CHƯA CÓ SẢN PHẨM YÊU THÍCH */
     if (wishlistIds.length === 0) {
       el.wishlistContent.innerHTML = `
         <div class="text-center py-12">
@@ -40,11 +58,13 @@ export const initWishlistPopup = () => {
       `;
       return;
     }
-    
-    const products = wishlistIds.map((id) => {
-        return state.danhSachSP.find((product) => product.id == id);
-      }).filter(Boolean);
 
+    /* TÌM THÔNG TIN SẢN PHẨM THEO ID WISHLIST */
+    const products = wishlistIds.map((id) => {
+      return state.danhSachSP.find((product) => product.id == id);
+    }).filter(Boolean);
+
+    /* TRƯỜNG HỢP ID WISHLIST CÓ NHƯNG KHÔNG TÌM THẤY SẢN PHẨM */
     if (products.length === 0) {
       el.wishlistContent.innerHTML = `
         <p class="text-center text-slate-400 font-bold py-10">
@@ -54,6 +74,7 @@ export const initWishlistPopup = () => {
       return;
     }
 
+    /* HIỂN THỊ DANH SÁCH SẢN PHẨM YÊU THÍCH */
     el.wishlistContent.innerHTML = products.map((product) => {
       return `
         <div class="flex items-center gap-4 border border-slate-100 rounded-2xl p-4">
@@ -77,38 +98,47 @@ export const initWishlistPopup = () => {
       `;
     }).join("");
 
+
+    /* XÓA SẢN PHẨM KHỎI WISHLIST */
     const removeButtons = el.wishlistContent.querySelectorAll(".btnRemoveWishlist");
 
     removeButtons.forEach((button) => {
       button.addEventListener("click", () => {
+
+        /* Lấy id sản phẩm cần xóa */
         const productId = button.dataset.id;
+
+        /* Xóa id sản phẩm khỏi state wishlist */
         state.wishlist = state.wishlist.filter((id) => {
           return id != productId;
         });
 
+        /* Lưu wishlist mới vào localStorage */
         luuWishlist();
+
+        /* Cập nhật badge wishlist */
         capNhatWishlist();
+
+        /* Render lại popup wishlist */
         renderWishlist();
       });
     });
   };
 
+  /* MỞ POPUP WISHLIST */
   el.btnWishlist.forEach((btn) => {
     btn.addEventListener("click", () => {
       el.popupWishlist.classList.remove("hidden");
       renderWishlist();
-    })
-  })
+    });
+  });
 
-  // el.btnWishlist.addEventListener("click", () => {
-  //   popupWishlist.classList.remove("hidden");
-  //   renderWishlist();
-  // });
-
+  /* ĐÓNG POPUP WISHLIST KHI CLICK OVERLAY */
   overlayWishlist.addEventListener("click", () => {
     popupWishlist.classList.add("hidden");
   });
 
+  /* ĐÓNG POPUP WISHLIST KHI CLICK NÚT X */
   btnCloseWishlist.addEventListener("click", () => {
     popupWishlist.classList.add("hidden");
   });

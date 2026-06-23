@@ -4,6 +4,9 @@ import { initDashboard } from "./adminJS/dashboard-flow.js";
 import { initManageOrder } from "./adminJS/order-flow.js";
 import { initManageUser } from "./adminJS/user-flow.js";
 import { initAdminProfile } from "./adminJS/profile-flow.js";
+import { initOrderDetail } from "./adminJS/order-detail-flow.js";
+import { initManageReturn } from "./adminJS/return-flow.js";
+import { initManageReview } from "./adminJS/review-flow.js";
 
 initAdminCommon();
 initDashboard();
@@ -13,3 +16,6 @@ initManageUser();
 initAdminProfile();
 initAdminCommon();
 initAdminMobileMenu();
+initOrderDetail();
+initManageReturn();
+initManageReview();
