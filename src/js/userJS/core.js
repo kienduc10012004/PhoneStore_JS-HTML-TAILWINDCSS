@@ -34,7 +34,7 @@ export const el = {
   btnCloseGioHang: document.getElementById("btnCloseGioHang"),
   btnGioHang: document.getElementById("btnGioHang"),
   badgeGioHang: document.getElementById("badgeGioHang"),
-  orderCheckLink: document.querySelectorAll(".orderCheckLink"),
+  orderCheckLink: document.querySelectorAll(".orderCheckLink, a[href$='order-check.html']"),
   btnCartHeader: document.querySelectorAll(".btnCartHeader"),
 
   /* Wishlist */

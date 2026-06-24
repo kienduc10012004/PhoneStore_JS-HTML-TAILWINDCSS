@@ -657,6 +657,10 @@ export const hienThiTrangThaiDangNhap = () => {
 };
 
 /* Disable các chức năng cần đăng nhập */
+const blockOrderCheckWhenLoggedOut = (event) => {
+  event.preventDefault();
+};
+
 const disableAuthActions = () => {
   el.orderCheckLink.forEach((link) => {
     link.classList.add(
@@ -664,7 +668,8 @@ const disableAuthActions = () => {
       "cursor-not-allowed"
     );
     link.classList.remove("hover:text-blue-600")
-    link.style.pointerEvents = "auto";
+    link.style.pointerEvents = "";
+    link.addEventListener("click", blockOrderCheckWhenLoggedOut);
   });
 
   el.btnWishlist.forEach((button) => {
@@ -694,6 +699,8 @@ const enableAuthActions = () => {
       "pointer-events-none",
       "cursor-not-allowed"
     );
+    link.style.pointerEvents = "";
+    link.removeEventListener("click", blockOrderCheckWhenLoggedOut);
   });
 
   el.btnWishlist.forEach((button) => {

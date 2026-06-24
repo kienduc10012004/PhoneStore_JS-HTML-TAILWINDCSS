@@ -10,6 +10,12 @@ import {
   getReturnRequestByItemKey,
 } from "./return-flow.js";
 
+const isUserLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+if (!isUserLoggedIn) {
+  window.location.href = "./login.html";
+}
+
 /* ================= DOM ĐƠN HÀNG ================= */
 const orderTableBody = getElement("orderTableBody");
 const RETURN_WINDOW_MS = 7 * 60 * 1000;
@@ -435,6 +441,8 @@ const handleCancelButtons = () => {
 };
 
 /* ================= KHỞI CHẠY TRANG ================= */
-renderOrders();
-setInterval(updateReturnTimers, 1000);
-initReturnFeature(renderOrders);
+if (isUserLoggedIn) {
+  renderOrders();
+  setInterval(updateReturnTimers, 1000);
+  initReturnFeature(renderOrders);
+}
