@@ -228,6 +228,7 @@ export const initCarousel = () => {
   const carouselItems =
     el.carouselTrack.children;
 
+  /* State carousel */
   let autoSlide = null;
 
   let isDragging = false;
@@ -235,6 +236,12 @@ export const initCarousel = () => {
   let startX = 0;
 
   let dragDistance = 0;
+
+  let activePointerId = null;
+
+  let hasDragged = false;
+
+  /* ================= HÀM HỖ TRỢ CAROUSEL ================= */
 
   /* Cập nhật dot */
   const updateDots = () => {
@@ -335,6 +342,8 @@ export const initCarousel = () => {
     updateDots();
   };
 
+  /* ================= ĐIỀU HƯỚNG SLIDE ================= */
+
   /* Slide tiếp theo */
   const nextSlide = () => {
 
@@ -363,29 +372,45 @@ export const initCarousel = () => {
     updateCarouselPosition();
   };
 
-  /* Bắt đầu kéo */
+  /* ================= KÉO CAROUSEL ================= */
+
+  /* Bắt đầu kéo carousel */
   const startDrag = (event) => {
+    if (event.button && event.button !== 0) return;
+    if (event.isPrimary === false) return;
 
     clearInterval(autoSlide);
 
     isDragging = true;
 
+    activePointerId = event.pointerId;
+
+    hasDragged = false;
+
     startX = event.clientX;
 
     dragDistance = 0;
+
+    el.carouselTrack.setPointerCapture(event.pointerId);
 
     el.carouselTrack.style.transition = "none";
 
     el.carouselTrack.style.cursor = "grabbing";
   };
 
-  /* Đang kéo */
+  /* Đang kéo carousel */
   const dragging = (event) => {
 
     if (!isDragging) return;
 
+    if (event.pointerId !== activePointerId) return;
+
     dragDistance =
       event.clientX - startX;
+
+    if (Math.abs(dragDistance) > 8) {
+      hasDragged = true;
+    }
 
     const carouselWidth =
       el.carouselTrack.offsetWidth;
@@ -418,12 +443,20 @@ export const initCarousel = () => {
       `translateX(${translateValue}%)`;
   };
 
-  /* Kết thúc kéo */
-  const endDrag = () => {
+  /* Kết thúc kéo carousel */
+  const endDrag = (event) => {
 
     if (!isDragging) return;
 
+    if (event.pointerId !== activePointerId) return;
+
     isDragging = false;
+
+    activePointerId = null;
+
+    if (el.carouselTrack.hasPointerCapture(event.pointerId)) {
+      el.carouselTrack.releasePointerCapture(event.pointerId);
+    }
 
     el.carouselTrack.style.cursor = "grab";
 
@@ -451,6 +484,17 @@ export const initCarousel = () => {
     autoSlide = startAutoSlide();
   };
 
+  /* Chặn click link nếu người dùng vừa kéo carousel */
+  const preventClickAfterDrag = (event) => {
+    if (!hasDragged) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    hasDragged = false;
+  };
+
+  /* ================= GẮN SỰ KIỆN CAROUSEL ================= */
+
   /* Click nút next */
   el.btnNextSlide.addEventListener(
     "click",
@@ -477,28 +521,35 @@ export const initCarousel = () => {
     }
   );
 
-  /* Event drag */
+  /* Event kéo carousel bằng chuột / cảm ứng */
   el.carouselTrack.addEventListener(
-    "mousedown",
+    "pointerdown",
     startDrag
   );
 
   el.carouselTrack.addEventListener(
-    "mousemove",
+    "pointermove",
     dragging
   );
 
   el.carouselTrack.addEventListener(
-    "mouseup",
+    "pointerup",
     endDrag
   );
 
   el.carouselTrack.addEventListener(
-    "mouseleave",
+    "pointercancel",
     endDrag
   );
 
+  el.carouselTrack.addEventListener(
+    "click",
+    preventClickAfterDrag,
+    true
+  );
+
   el.carouselTrack.style.cursor = "grab";
+  el.carouselTrack.style.touchAction = "pan-y";
 
   createDots();
 

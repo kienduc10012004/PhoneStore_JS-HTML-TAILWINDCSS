@@ -435,44 +435,127 @@ const initProductImageZoom = () => {
   if (!zoomBox || !zoomImage || !btnZoom) return;
 
   let isZooming = false;
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let translateX = 0;
+  let translateY = 0;
+  let lastTranslateX = 0;
+  let lastTranslateY = 0;
+  const zoomScale = 2;
+
+  zoomImage.style.userSelect = "none";
+
+  /* Cập nhật vị trí ảnh khi kéo trong trạng thái zoom */
+  const updateZoomTransform = () => {
+    zoomImage.style.transform = isZooming
+      ? `translate(${translateX}px, ${translateY}px) scale(${zoomScale})`
+      : "";
+  };
+
+  /* Giới hạn ảnh không bị kéo quá xa khỏi khung */
+  const limitTranslate = (value, maxValue) => {
+    return Math.max(-maxValue, Math.min(maxValue, value));
+  };
+
+  /* Lấy giới hạn kéo theo kích thước khung ảnh */
+  const getDragLimit = () => {
+    const rect = zoomBox.getBoundingClientRect();
+
+    return {
+      x: rect.width / 2,
+      y: rect.height / 2,
+    };
+  };
+
+  /* Reset ảnh về vị trí ban đầu */
+  const resetZoomPosition = () => {
+    isDragging = false;
+    translateX = 0;
+    translateY = 0;
+    lastTranslateX = 0;
+    lastTranslateY = 0;
+    zoomImage.style.transformOrigin = "center center";
+    updateZoomTransform();
+  };
+
+  /* Kết thúc thao tác kéo ảnh */
+  const stopDragging = () => {
+    isDragging = false;
+    zoomBox.style.cursor = "grab";
+    zoomBox.classList.remove("cursor-grabbing");
+    zoomBox.classList.add("cursor-grab");
+  };
 
   btnZoom.addEventListener("click", () => {
     isZooming = !isZooming;
 
     if (isZooming) {
+      zoomBox.style.touchAction = "none";
+      zoomBox.style.cursor = "grab";
       zoomBox.classList.remove("cursor-default");
-      zoomBox.classList.add("cursor-zoom-in");
+      zoomBox.classList.add("cursor-grab");
 
-      zoomImage.classList.add("scale-[2]");
+      zoomImage.classList.remove("scale-[2]");
+      updateZoomTransform();
     } else {
-      zoomBox.classList.remove("cursor-zoom-in");
+      zoomBox.style.touchAction = "";
+      zoomBox.style.cursor = "default";
+      zoomBox.classList.remove("cursor-grab", "cursor-grabbing");
       zoomBox.classList.add("cursor-default");
 
       zoomImage.classList.remove("scale-[2]");
-      zoomImage.style.transformOrigin = "center center";
+      resetZoomPosition();
     }
-      });
+  });
 
-  zoomBox.addEventListener("mousemove", (event) => {
+  zoomBox.addEventListener("pointerdown", (event) => {
     if (!isZooming) return;
 
-    const rect = zoomBox.getBoundingClientRect();
+    event.preventDefault();
+    isDragging = true;
+    startX = event.clientX;
+    startY = event.clientY;
+    lastTranslateX = translateX;
+    lastTranslateY = translateY;
 
-    const x = ((event.clientX - rect.left) / rect.width) * 100;
-    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    zoomBox.setPointerCapture(event.pointerId);
+    zoomBox.style.cursor = "grabbing";
+    zoomBox.classList.remove("cursor-grab");
+    zoomBox.classList.add("cursor-grabbing");
+  });
 
-    zoomImage.style.transformOrigin = `${x}% ${y}%`;
+  zoomBox.addEventListener("pointermove", (event) => {
+    if (!isZooming || !isDragging) return;
+
+    const limit = getDragLimit();
+    const deltaX = event.clientX - startX;
+    const deltaY = event.clientY - startY;
+
+    translateX = limitTranslate(lastTranslateX + deltaX, limit.x);
+    translateY = limitTranslate(lastTranslateY + deltaY, limit.y);
+
+    updateZoomTransform();
+  });
+
+  zoomBox.addEventListener("pointerup", (event) => {
+    if (!isDragging) return;
+
+    zoomBox.releasePointerCapture(event.pointerId);
+    stopDragging();
+  });
+
+  zoomBox.addEventListener("pointercancel", (event) => {
+    if (!isDragging) return;
+
+    zoomBox.releasePointerCapture(event.pointerId);
+    stopDragging();
   });
 
   zoomBox.addEventListener("mouseleave", () => {
-    if (!isZooming) return;
+    if (!isZooming || !isDragging) return;
 
-    isZooming = false;
-    zoomImage.classList.remove("scale-[2]");
-    zoomImage.style.transformOrigin = "center center";
-
-    zoomBox.classList.remove("cursor-zoom-in");
-    zoomBox.classList.remove("cursor-default");
+    stopDragging();
   });
 };
 
