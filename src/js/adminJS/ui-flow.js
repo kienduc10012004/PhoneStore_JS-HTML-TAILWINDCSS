@@ -1,5 +1,5 @@
 /* ================= IMPORT MODULES ================= */
-import { dom, state, formatCurrency, logOutAdmin, getBrands, saveBrands, isInPageAdmin, getElement, selectElements } from "./core.js";
+import { dom, state, formatCurrency, logOutAdmin, getBrands, saveBrands, isInPageAdmin, getElement, selectElements, createElement } from "./core.js";
 
 /* ======================= LẤY LINK ẢNH ========================= */
 export const getImageUrl = (img) => {
@@ -253,6 +253,45 @@ export const initAdminCommon = () => {
   if (dom.btnlogout) {
     dom.btnlogout.addEventListener("click", logOutAdmin);
   }
+};
+
+/* ================= BACK TO TOP ADMIN ================= */
+
+/* Khởi tạo nút quay lại đầu trang admin */
+export const initAdminBackToTop = () => {
+  if (getElement("btnAdminBackToTop")) return;
+
+  const btnBackToTop = createElement("button");
+
+  btnBackToTop.id = "btnAdminBackToTop";
+  btnBackToTop.type = "button";
+  btnBackToTop.setAttribute("aria-label", "Quay lại đầu trang");
+  btnBackToTop.className = "hidden fixed right-5 bottom-5 z-[60] w-12 h-12 rounded-full bg-blue-500/30 text-blue-700 border border-blue-500/30 shadow-lg backdrop-blur-md hover:bg-blue-500 hover:text-white duration-200 cursor-pointer";
+  btnBackToTop.innerHTML = `<i class="fa-solid fa-caret-up"></i>`;
+
+  document.body.appendChild(btnBackToTop);
+
+  const toggleBackToTopButton = () => {
+    if (window.scrollY > 300) {
+      btnBackToTop.classList.remove("hidden");
+      btnBackToTop.classList.add("flex", "items-center", "justify-center");
+    }
+    else {
+      btnBackToTop.classList.add("hidden");
+      btnBackToTop.classList.remove("flex", "items-center", "justify-center");
+    }
+  };
+
+  btnBackToTop.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+
+  window.addEventListener("scroll", toggleBackToTopButton);
+
+  toggleBackToTopButton();
 };
 
 /* ================= RENDER SELECT HÃNG ================= */

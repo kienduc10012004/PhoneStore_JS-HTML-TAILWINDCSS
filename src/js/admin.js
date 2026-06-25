@@ -1,4 +1,4 @@
-import { initAdminCommon, initAdminMobileMenu } from "./adminJS/ui-flow.js";
+import { initAdminCommon, initAdminMobileMenu, initAdminBackToTop } from "./adminJS/ui-flow.js";
 import { initManageProduct } from "./adminJS/crud-flow.js";
 import { initDashboard } from "./adminJS/dashboard-flow.js";
 import { initManageOrder } from "./adminJS/order-flow.js";
@@ -9,6 +9,7 @@ import { initManageReturn } from "./adminJS/return-flow.js";
 import { initManageReview } from "./adminJS/review-flow.js";
 
 initAdminCommon();
+initAdminBackToTop();
 initDashboard();
 initManageProduct();
 initManageOrder();

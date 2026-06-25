@@ -2,7 +2,7 @@
 import { API, el, state, luuGioHang, capNhatSoLuongGioHang, productDetailUrl, isInPageUser, getElement, selectElements } from "./core.js";
 import { bindPopupEvents } from "./popup-flow.js";
 import { renderGioHang } from "./cart-flow.js";
-import { formatCurrency, renderStars, showToast, getImageUrl, openRequireLoginPopup } from "./ui-flow.js";
+import { formatCurrency, renderStars, showToast, getImageUrl, openRequireLoginPopup, initBackToTop } from "./ui-flow.js";
 import { initWishlistPopup } from "./wishlist-popup.js";
 import { renderProductReviews } from "./review-flow.js";
 
@@ -741,3 +741,4 @@ window.clearProductCapacity = () => {
 /* ================= KHỞI CHẠY TRANG ================= */
 loadDetail();
 initWishlistPopup();
+initBackToTop();

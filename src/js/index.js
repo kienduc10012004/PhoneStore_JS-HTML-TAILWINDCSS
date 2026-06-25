@@ -7,7 +7,7 @@ import { bindFilterEvent, renderUserBrandFilter } from "./userJS/filter-flow.js"
 import { bindPopupEvents } from "./userJS/popup-flow.js";
 import { layDanhSachSP } from "./userJS/product-flow.js";
 import { renderGioHang } from "./userJS/cart-flow.js";
-import { initCarousel, initSaleCountdown, capNhatWishlist, closeMenuMobileByWidthScreen, hienThiTrangThaiDangNhap, initRequireLoginPopup } from "./userJS/ui-flow.js";
+import { initCarousel, initSaleCountdown, capNhatWishlist, closeMenuMobileByWidthScreen, hienThiTrangThaiDangNhap, initRequireLoginPopup, initBackToTop } from "./userJS/ui-flow.js";
 import { initWishlistPopup } from "./userJS/wishlist-popup.js";
 
 /* ======================================================
@@ -28,6 +28,9 @@ initCarousel();
 
 /* Khởi tạo countdown sale */
 initSaleCountdown();
+
+/* Khởi tạo nút quay lại đầu trang */
+initBackToTop();
 
 /* Sự kiện mở popup giỏ hàng */
 el.btnGioHang?.addEventListener("click", () => {
