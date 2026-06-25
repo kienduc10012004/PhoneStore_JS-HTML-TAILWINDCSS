@@ -16,6 +16,12 @@ body {
 .animate-cart-remove {
   animation: slideOutCart 0.35s ease forwards;
 }
+@media (min-width: 1024px) {
+  .headerActionGroup {
+    min-width: 360px;
+    justify-content: flex-end;
+  }
+}
 @layer theme, base, components, utilities;
 @layer theme {
   :root, :host {

@@ -37,16 +37,16 @@
               <a href="./page-user/policy-warranty.html" class="block px-4 py-3 rounded-xl hover:bg-slate-100 duration-100 font-bold">Chính sách bảo hành</a>
             </div>
           </div>
-          <a href="./page-user/order-check.html" class="orderCheckLink duration-100 hover:text-blue-600 font-bold w-35  h-6">Kiểm tra đơn hàng</a>
+          <a href="./page-user/order-check.html" class="orderCheckLink duration-100 font-bold w-35 h-6 opacity-40 cursor-not-allowed">Kiểm tra đơn hàng</a>
           <hr class="text-slate-400">
           <div class="flex flex-col gap-5 w-full justify-center items-center">
             <!-- wishlist btn -->
-            <button id="btnWishlist" class="btnWishlist flex gap-2 relative w-full h-11 rounded-2xl bg-slate-100 border border-slate-500 hover:bg-rose-50 hover:text-rose-500 items-center hover:border-rose-500 font-bold justify-center cursor-pointer duration-100">
+            <button id="btnWishlist" disabled class="btnWishlist flex gap-2 relative w-full h-11 rounded-2xl bg-slate-100 border border-slate-500 items-center font-bold justify-center opacity-40 cursor-not-allowed duration-100">
               <i class="fa-solid fa-heart text-sm"></i> Yêu thích
-              <span id="badgeWishlist" class="badgeWishlist absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-black min-w-5 h-5 px-1 rounded-full flex items-center justify-center ring-4 ring-white">0</span>
+              <span id="badgeWishlist" class="badgeWishlist hidden absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-black min-w-5 h-5 px-1 rounded-full flex items-center justify-center ring-4 ring-white">0</span>
             </button>
             <!-- đăng kí, đăng nhâp -->
-             <a href="./page-user/login.html" class="loginBtnMobile w-full flex items-center justify-center px-5 py-3 rounded-2xl border border-slate-200 bg-[#1d27eb] hover:opacity-100 opacity-80 font-bold text-sm text-white transition">
+             <a href="./page-user/login.html" class="loginBtnMobile hidden w-full flex items-center justify-center px-5 py-3 rounded-2xl border border-slate-200 bg-[#1d27eb] hover:opacity-100 opacity-80 font-bold text-sm text-white transition">
               Đăng nhập | Đăng kí
             </a>
 
@@ -97,13 +97,13 @@
               <a href="./page-user/policy-warranty.html" class="block px-4 py-3 rounded-xl hover:bg-slate-100 duration-100">Chính sách bảo hành</a>
             </div>
           </div>
-          <a href="./page-user/order-check.html" class="duration-100 hover:text-blue-600 orderCheckLink">Kiểm tra đơn hàng</a>
+          <a href="./page-user/order-check.html" class="duration-100 orderCheckLink opacity-40 cursor-not-allowed">Kiểm tra đơn hàng</a>
         </nav>
     
-        <div class="flex items-center gap-5">
-          <button id="btnWishlist" class="btnWishlist hidden lg:flex relative w-11 h-11 rounded-2xl bg-slate-200 hover:bg-rose-100 hover:text-rose-500 items-center justify-center cursor-pointer duration-100">
+        <div class="headerActionGroup flex items-center gap-5">
+          <button id="btnWishlist" disabled class="btnWishlist hidden lg:flex relative w-11 h-11 rounded-2xl bg-slate-200 items-center justify-center opacity-40 cursor-not-allowed duration-100">
             <i class="fa-solid fa-heart text-sm"></i>
-            <span id="badgeWishlist" class="badgeWishlist absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-black min-w-5 h-5 px-1 rounded-full flex items-center justify-center ring-4 ring-white">0</span>
+            <span id="badgeWishlist" class="badgeWishlist hidden absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-black min-w-5 h-5 px-1 rounded-full flex items-center justify-center ring-4 ring-white">0</span>
           </button>
           
           <!-- btn menu mobile -->
@@ -111,17 +111,17 @@
             <i class="fa-solid fa-bars text-slate-500 text-xl"></i>
           </div>
           
-          <button id="btnGioHang" class="btnCartHeader cursor-pointer duration-100 relative bg-slate-900 text-white px-4 md:px-5 py-3 rounded-2xl hover:bg-blue-600 flex items-center gap-2">
+          <button id="btnGioHang" disabled class="btnCartHeader opacity-40 cursor-not-allowed duration-100 relative bg-slate-900 text-white px-4 md:px-5 py-3 rounded-2xl flex items-center gap-2">
             <i class="fa-solid fa-cart-arrow-down"></i>
             <span class="hidden sm:inline font-bold text-sm">Giỏ hàng</span>
-            <span id="badgeGioHang" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-black min-w-6 h-6 px-1 rounded-full flex justify-center items-center ring-4 ring-white">0</span>
+            <span id="badgeGioHang" class="hidden absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-black min-w-6 h-6 px-1 rounded-full flex justify-center items-center ring-4 ring-white">0</span>
           </button>
 
-          <a href="./page-user/login.html" class="loginBtnDesktop  items-center justify-center px-5 py-3 rounded-2xl border border-slate-200 bg-[#1d27eb] hover:opacity-100 opacity-80 font-bold text-sm text-white transition">
+          <a href="./page-user/login.html" class="loginBtnDesktop hidden items-center justify-center px-5 py-3 rounded-2xl border border-slate-200 bg-[#1d27eb] hover:opacity-100 opacity-80 font-bold text-sm text-white transition">
             Đăng nhập | Đăng kí
           </a>
 
-          <div class="userProfileDesktop  relative">
+          <div class="userProfileDesktop hidden relative">
             <button class="avatarBtn flex peer items-center cursor-pointer bg-[#4850ed] hover:bg-indigo-700 duration-100 gap-2 border p-3 text-white font-medium rounded-2xl">
               <i class="fa-solid fa-circle-user"></i>
               <span class="usernameDisplay truncate max-w-[80px]">Tên User</span>

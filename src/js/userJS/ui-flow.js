@@ -567,7 +567,7 @@ export const closeMenuMobileByWidthScreen = () => {
 
 /* ================= HIỂN THỊ TRẠNG THÁI ĐĂNG NHẬP ================= */
 
-/* Lấy các phần tử login */
+/* Lấy các phần tử đăng nhập / profile trong header */
 const getLoginElements = () => {
 
   return {
@@ -585,7 +585,7 @@ const getLoginElements = () => {
   };
 };
 
-/* Hiển thị profile user */
+/* Hiển thị profile user khi đã đăng nhập */
 const showUserProfile = (username) => {
 
   const {
@@ -598,11 +598,11 @@ const showUserProfile = (username) => {
   loginBtnMobile?.classList.add("hidden");
 
   loginBtnDesktop?.classList.add("hidden");
+  loginBtnDesktop?.classList.remove("lg:flex");
 
   userProfileMobile?.classList.remove("hidden");
 
-  userProfileDesktop?.classList.add("hidden");
-
+  userProfileDesktop?.classList.remove("hidden");
   userProfileDesktop?.classList.add("lg:flex");
 
   el.usernameDisplay.forEach((item) => {
@@ -614,7 +614,7 @@ const showUserProfile = (username) => {
   });
 };
 
-/* Hiển thị nút đăng nhập */
+/* Hiển thị nút đăng nhập khi chưa đăng nhập */
 const showLoginButtons = () => {
 
   const {
@@ -626,18 +626,16 @@ const showLoginButtons = () => {
 
   loginBtnMobile?.classList.remove("hidden");
 
-  loginBtnDesktop?.classList.remove("hidden");
-
   loginBtnDesktop?.classList.add("hidden");
-
   loginBtnDesktop?.classList.add("lg:flex");
 
   userProfileMobile?.classList.add("hidden");
 
   userProfileDesktop?.classList.add("hidden");
+  userProfileDesktop?.classList.remove("lg:flex");
 };
 
-/* Hiển thị trạng thái đăng nhập */
+/* Kiểm tra localStorage và hiển thị đúng trạng thái đăng nhập */
 export const hienThiTrangThaiDangNhap = () => {
 
   const isLoggedIn =
@@ -656,18 +654,19 @@ export const hienThiTrangThaiDangNhap = () => {
   }
 };
 
-/* Disable các chức năng cần đăng nhập */
+/* Chặn chuyển trang kiểm tra đơn hàng khi chưa đăng nhập */
 const blockOrderCheckWhenLoggedOut = (event) => {
   event.preventDefault();
 };
 
+/* Disable các chức năng cần đăng nhập */
 const disableAuthActions = () => {
   el.orderCheckLink.forEach((link) => {
     link.classList.add(
       "opacity-40",
       "cursor-not-allowed"
     );
-    link.classList.remove("hover:text-blue-600")
+    link.classList.remove("hover:text-blue-600");
     link.style.pointerEvents = "";
     link.addEventListener("click", blockOrderCheckWhenLoggedOut);
   });
@@ -678,7 +677,13 @@ const disableAuthActions = () => {
       "opacity-40",
       "cursor-not-allowed"
     );
-    button.classList.remove("hover:text-rose-500", "hover:bg-rose-100", "cursor-pointer");
+    button.classList.remove(
+      "hover:text-rose-500",
+      "hover:bg-rose-50",
+      "hover:bg-rose-100",
+      "hover:border-rose-500",
+      "cursor-pointer"
+    );
   });
 
   el.btnCartHeader.forEach((button) => {
@@ -699,6 +704,7 @@ const enableAuthActions = () => {
       "pointer-events-none",
       "cursor-not-allowed"
     );
+    link.classList.add("hover:text-blue-600");
     link.style.pointerEvents = "";
     link.removeEventListener("click", blockOrderCheckWhenLoggedOut);
   });
@@ -709,6 +715,20 @@ const enableAuthActions = () => {
       "opacity-40",
       "cursor-not-allowed"
     );
+    button.classList.add(
+      "hover:text-rose-500",
+      "cursor-pointer"
+    );
+
+    if (button.classList.contains("lg:flex")) {
+      button.classList.add("hover:bg-rose-100");
+    }
+    else {
+      button.classList.add(
+        "hover:bg-rose-50",
+        "hover:border-rose-500"
+      );
+    }
   });
 
   el.btnCartHeader.forEach((button) => {
@@ -716,6 +736,10 @@ const enableAuthActions = () => {
     button.classList.remove(
       "opacity-40",
       "cursor-not-allowed"
+    );
+    button.classList.add(
+      "hover:bg-blue-600",
+      "cursor-pointer"
     );
   });
 };

@@ -16,4 +16,12 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; }
   animation: slideOutCart 0.35s ease forwards;
 }
 
+/* Giữ ổn định cụm nút bên phải header khi JS cập nhật trạng thái đăng nhập */
+@media (min-width: 1024px) {
+  .headerActionGroup {
+    min-width: 360px;
+    justify-content: flex-end;
+  }
+}
+
 @import "tailwindcss"
