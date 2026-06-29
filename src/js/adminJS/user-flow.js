@@ -1,8 +1,8 @@
 import { dom, getElement } from "./core.js"
 
 /* ================= KEY LOCALSTORAGE ================= */
-const USER_STORAGE_KEY = "KIENPHONE_USERS";
-const ADMIN_STORAGE_KEY = "KIENPHONE_ADMIN";
+const USER_STORAGE_KEY = "HiKuPHONE_USERS";
+const ADMIN_STORAGE_KEY = "HiKuPHONE_ADMIN";
 
 /* ================= STATE QUẢN LÝ USER ================= */
 let users = [];

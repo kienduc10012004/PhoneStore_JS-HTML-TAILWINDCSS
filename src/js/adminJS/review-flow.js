@@ -310,7 +310,7 @@ window.deleteReview = async (productId, reviewId) => {
 };
 
 /* ================= KHOI TAO QUAN LY REVIEW ================= */
-/* ----- Tai du lieu san pham va gan su kien dong popup chi tiet ----- */
+/* ----- Tai du lieu san pham va gan su HiKu dong popup chi tiet ----- */
 export const initManageReview = async () => {
   if (!dom.reviewTableBody) return;
 

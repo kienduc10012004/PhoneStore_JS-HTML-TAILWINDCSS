@@ -2,7 +2,7 @@
 import { dom, logOutAdmin, getElement } from "./core.js";
 
 /* ================= KEY LOCALSTORAGE ADMIN ================= */
-const ADMIN_STORAGE_KEY = "KIENPHONE_ADMIN";
+const ADMIN_STORAGE_KEY = "HiKuPHONE_ADMIN";
 
 /* ================= REGEX KIỂM TRA MẬT KHẨU ================= */
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/;

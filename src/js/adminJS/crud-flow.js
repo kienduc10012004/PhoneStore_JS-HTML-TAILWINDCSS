@@ -30,7 +30,7 @@ const createDefaultReview = () => {
   return {
     id: "DEFAULT_REVIEW",
     username: "__default_review__",
-    displayName: "KienPhone",
+    displayName: "HiKuPhone",
     avatar: "K",
     stars: 5,
     title: "Đánh giá sản phẩm",

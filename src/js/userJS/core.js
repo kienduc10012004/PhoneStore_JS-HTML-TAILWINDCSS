@@ -1,6 +1,6 @@
 /* ================= API VÀ KEY LOCALSTORAGE ================= */
 export const API = "https://69f8c3e5f7044aa0103e73e0.mockapi.io/api/v1/productphone";
-export const USER_STORAGE_KEY = "KIENPHONE_USERS";
+export const USER_STORAGE_KEY = "HiKuPHONE_USERS";
 
 /* ================= DOM HELPERS USER ================= */
 export const getElement = (id) => document.getElementById(id);
@@ -251,7 +251,7 @@ export const checkoutUrl = () => {
 };
 
 /* ================= KEY LƯU DANH SÁCH HÃNG ================= */
-export const BRAND_STORAGE_KEY = "KIENPHONE_BRANDS";
+export const BRAND_STORAGE_KEY = "HiKuPHONE_BRANDS";
 
 /* ================= DANH SÁCH HÃNG MẶC ĐỊNH ================= */
 export const defaultBrands = [

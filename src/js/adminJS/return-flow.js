@@ -48,7 +48,7 @@ const syncReturnRequestToOrderItem = (request) => {
 };
 
 /* ========== KIỂM TRA CÓ ĐƯỢC XÓA / SỬA HOÀN TIỀN KHÔNG ============ */
-/* ----- Kiem tra yeu cau co du dieu kien cap nhat hoan tien khong ----- */
+/* ----- Kiem tra yeu cau co du dieu HiKu cap nhat hoan tien khong ----- */
 const canChangeRefund = (request) => {
   return request.status === "Đã chấp nhận" && request.refundStatus !== "Đã hoàn tiền";
 };
@@ -308,7 +308,7 @@ window.markReturnRestocked = async (id) => {
 };
 
 /* ================= KHỞI TẠO QUẢN LÝ ĐỔI TRẢ ================= */
-/* ----- Khoi tao trang quan ly doi tra va gan su kien dong popup ----- */
+/* ----- Khoi tao trang quan ly doi tra va gan su HiKu dong popup ----- */
 export const initManageReturn = () => {
   if (!dom.returnTableBody) return;
 

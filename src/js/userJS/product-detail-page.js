@@ -455,7 +455,7 @@ const initProductImageZoom = () => {
 
   /* Giới hạn ảnh không bị kéo quá xa khỏi khung */
   const limitTranslate = (value, maxValue) => {
-    return Math.max(-maxValue, Math.min(maxValue, value));
+    return Math.max(-maxValue, Math.min(maxValue, value)
   };
 
   /* Lấy giới hạn kéo theo kích thước khung ảnh */

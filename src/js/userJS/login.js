@@ -2,8 +2,8 @@
 import { el } from "./core.js";
 
 /* ================= KEY LOCALSTORAGE ================= */
-const ADMIN_STORAGE_KEY = "KIENPHONE_ADMIN";
-const USER_STORAGE_KEY = "KIENPHONE_USERS";
+const ADMIN_STORAGE_KEY = "HiKuPHONE_ADMIN";
+const USER_STORAGE_KEY = "HiKuPHONE_USERS";
 
 /* ================= REGEX KIỂM TRA MẬT KHẨU ================= */
 const passwordRegex =

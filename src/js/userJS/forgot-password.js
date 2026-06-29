@@ -1,7 +1,7 @@
 import { el } from "./core.js";
 
 /* ================= KEY LOCALSTORAGE ================= */
-const USER_STORAGE_KEY = "KIENPHONE_USERS";
+const USER_STORAGE_KEY = "HiKuPHONE_USERS";
 
 /* ================= REGEX KIỂM TRA INPUT ================= */
 const phoneRegex = /^[0-9]{10}$/;

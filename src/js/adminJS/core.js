@@ -167,7 +167,7 @@ export const logOutAdmin = () => {
 };
 
 /* ================= KEY LƯU DANH SÁCH HÃNG ================= */
-export const BRAND_STORAGE_KEY = "KIENPHONE_BRANDS";
+export const BRAND_STORAGE_KEY = "HiKuPHONE_BRANDS";
 
 /* ================= DANH SÁCH HÃNG MẶC ĐỊNH ================= */
 export const defaultBrands = [
