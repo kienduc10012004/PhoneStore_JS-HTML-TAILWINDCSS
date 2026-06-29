@@ -1,5 +1,6 @@
 /* ================= IMPORT MODULES ================= */
 import { dom, state, formatCurrency, logOutAdmin, getBrands, saveBrands, isInPageAdmin, getElement, selectElements, createElement } from "./core.js";
+import { showAppConfirm } from "../shared-dialog.js";
 
 /* ======================= LẤY LINK ẢNH ========================= */
 export const getImageUrl = (img) => {
@@ -314,7 +315,7 @@ export const renderBrandSelect = () => {
 };
 
 /* ================= XÓA HÃNG ================= */
-export const deleteTypeOption = () => {
+export const deleteTypeOption = async () => {
   if (!dom.type) return;
 
   const selectedType = dom.type.value.trim();
@@ -326,9 +327,11 @@ export const deleteTypeOption = () => {
   }
 
   /* Xác nhận xóa */
-  const isConfirm = confirm(
-    `Bạn có chắc muốn xóa hãng "${selectedType}" không?`
-  );
+  const isConfirm = await showAppConfirm({
+    title: "Xóa hãng",
+    message: `Bạn có chắc muốn xóa hãng "${selectedType}" không?`,
+    confirmText: "Xóa",
+  });
 
   if (!isConfirm) return;
 

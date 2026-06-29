@@ -1,5 +1,6 @@
 /* ================= IMPORT MODULES ================= */
 import { API_URL, dom, state } from "./core.js";
+import { showAppConfirm } from "../shared-dialog.js";
 import {
   renderDanhSachSP,
   resetForm,
@@ -179,7 +180,11 @@ window.editProduct = (id) => {
 
 /* ================= XÓA SẢN PHẨM ================= */
 window.deleteProduct = async (id) => {
-  const isConfirm = confirm("Xóa sản phẩm này?");
+  const isConfirm = await showAppConfirm({
+    title: "Xóa sản phẩm",
+    message: "Bạn có chắc muốn xóa sản phẩm này?",
+    confirmText: "Xóa",
+  });
 
   if (!isConfirm) return;
 

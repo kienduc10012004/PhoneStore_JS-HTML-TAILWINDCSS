@@ -68,7 +68,7 @@ const loadCheckoutItems = async () => {
     const cartItems = JSON.parse(localStorage.getItem(cartKey)) || [];
 
     checkoutItems = selectedIds.length
-      ? cartItems.filter((item) => selectedIds.includes(String(item.id)))
+      ? cartItems.filter((item) => selectedIds.includes(String(item.cartId || item.id)))
       : cartItems;
 
     renderOrderSummary();
@@ -380,7 +380,7 @@ const submitOrder = async () => {
     const currentCart = JSON.parse(localStorage.getItem(cartKey)) || [];
 
     const nextCart = selectedIds.length
-      ? currentCart.filter((item) => !selectedIds.includes(String(item.id)))
+      ? currentCart.filter((item) => !selectedIds.includes(String(item.cartId || item.id)))
       : [];
 
     localStorage.setItem(cartKey, JSON.stringify(nextCart));

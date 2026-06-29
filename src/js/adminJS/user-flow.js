@@ -1,4 +1,5 @@
-import { dom, getElement } from "./core.js"
+import { dom, getElement } from "./core.js";
+import { showAppConfirm } from "../shared-dialog.js";
 
 /* ================= KEY LOCALSTORAGE ================= */
 const USER_STORAGE_KEY = "HiKuPHONE_USERS";
@@ -218,16 +219,18 @@ window.toggleUserStatus = (id) => {
 };
 
 /* ================= XÓA USER ================= */
-window.deleteUser = (id) => {
+window.deleteUser = async (id) => {
   const user = users.find((item) => {
     return String(item.id) === String(id);
   });
 
   if (!user) return;
 
-  const confirmDelete = confirm(
-    `Bạn có chắc muốn xóa tài khoản "${user.username}" không?`
-  );
+  const confirmDelete = await showAppConfirm({
+    title: "Xóa tài khoản",
+    message: `Bạn có chắc muốn xóa tài khoản "${user.username}" không?`,
+    confirmText: "Xóa",
+  });
 
   if (!confirmDelete) return;
 

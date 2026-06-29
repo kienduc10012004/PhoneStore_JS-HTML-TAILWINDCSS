@@ -1,3 +1,4 @@
+import "./shared-dialog.js";
 import { initAdminCommon, initAdminMobileMenu, initAdminBackToTop } from "./adminJS/ui-flow.js";
 import { initManageProduct } from "./adminJS/crud-flow.js";
 import { initDashboard } from "./adminJS/dashboard-flow.js";

@@ -4,6 +4,7 @@
 
 import { API, state, luuWishlist, el, getUserWishlistKey } from "./core.js";
 import { getImageUrl, formatCurrency, capNhatWishlist } from "./ui-flow.js";
+import { showAppConfirm } from "../shared-dialog.js";
 
 /* ============================================ KHỞI TẠO POPUP WISHLIST ============================================ */
 
@@ -103,10 +104,17 @@ export const initWishlistPopup = () => {
     const removeButtons = el.wishlistContent.querySelectorAll(".btnRemoveWishlist");
 
     removeButtons.forEach((button) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", async () => {
 
         /* Lấy id sản phẩm cần xóa */
         const productId = button.dataset.id;
+        const isConfirm = await showAppConfirm({
+          title: "Xóa yêu thích",
+          message: "Bạn có chắc muốn xóa sản phẩm này khỏi danh sách yêu thích?",
+          confirmText: "Xóa",
+        });
+
+        if (!isConfirm) return;
 
         /* Xóa id sản phẩm khỏi state wishlist */
         state.wishlist = state.wishlist.filter((id) => {

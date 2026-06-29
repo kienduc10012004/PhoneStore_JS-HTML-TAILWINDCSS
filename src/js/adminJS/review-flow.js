@@ -1,4 +1,5 @@
 import { API_URL, dom, formatCurrency } from "./core.js";
+import { showAppConfirm } from "../shared-dialog.js";
 import { getImageUrl } from "./ui-flow.js";
 
 /* ================= STATE QUAN LY REVIEW ================= */
@@ -299,7 +300,11 @@ window.toggleReviewVisibility = async (productId, reviewId, isHidden) => {
 
 /* ----- Xoa review khoi du lieu san pham va tinh lai thong ke ----- */
 window.deleteReview = async (productId, reviewId) => {
-  const isConfirm = confirm("Bạn có chắc muốn xóa đánh giá này?");
+  const isConfirm = await showAppConfirm({
+    title: "Xóa đánh giá",
+    message: "Bạn có chắc muốn xóa đánh giá này?",
+    confirmText: "Xóa",
+  });
   if (!isConfirm) return;
 
   const product = findProduct(productId);

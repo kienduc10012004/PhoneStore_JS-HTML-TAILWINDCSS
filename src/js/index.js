@@ -2,6 +2,7 @@
    IMPORT MODULES / HÀM CHỨC NĂNG
 ====================================================== */
 
+import "./shared-dialog.js";
 import { el, capNhatSoLuongGioHang, isInPageUser, state } from "./userJS/core.js";
 import { bindFilterEvent, renderUserBrandFilter } from "./userJS/filter-flow.js";
 import { bindPopupEvents } from "./userJS/popup-flow.js";

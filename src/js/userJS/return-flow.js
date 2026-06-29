@@ -1,6 +1,7 @@
 /* ================= IMPORT MODULES ================= */
 import { createElement, getElement, pageBody } from "./core.js";
 import { getOrders, saveOrders } from "./order-flow.js";
+import { showAppConfirm } from "../shared-dialog.js";
 
 /* ================= KEY LOCALSTORAGE ĐỔI TRẢ ================= */
 /* ----- Key luu danh sach yeu cau doi tra cua toan bo user ----- */
@@ -156,7 +157,15 @@ const renderImagePreview = () => {
 
 /* ================= XÓA ẢNH PREVIEW ================= */
 /* ----- Xoa mot anh khoi danh sach preview truoc khi submit ----- */
-window.removeReturnImage = (index) => {
+window.removeReturnImage = async (index) => {
+  const isConfirm = await showAppConfirm({
+    title: "Xóa ảnh",
+    message: "Bạn có chắc muốn xóa ảnh minh chứng này?",
+    confirmText: "Xóa",
+  });
+
+  if (!isConfirm) return;
+
   returnImages.splice(index, 1);
   renderImagePreview();
 };
@@ -186,7 +195,15 @@ const renderVideoPreview = () => {
 
 /* ================= XÓA VIDEO PREVIEW ================= */
 /* ----- Xoa video khoi preview truoc khi submit ----- */
-window.removeReturnVideo = () => {
+window.removeReturnVideo = async () => {
+  const isConfirm = await showAppConfirm({
+    title: "Xóa video",
+    message: "Bạn có chắc muốn xóa video minh chứng này?",
+    confirmText: "Xóa",
+  });
+
+  if (!isConfirm) return;
+
   returnVideo = null;
   getElement("returnVideoInput").value = "";
   renderVideoPreview();

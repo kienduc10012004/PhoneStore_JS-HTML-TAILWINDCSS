@@ -1,5 +1,6 @@
 /* ================= IMPORT MODULES ================= */
 import { dom, state, formatCurrency, selectElements } from "./core.js";
+import { showAppConfirm } from "../shared-dialog.js";
 
 /* ================= ADMIN: LẤY TẤT CẢ ĐƠN HÀNG ================= */
 
@@ -261,7 +262,7 @@ dom.orderTableBody.innerHTML = Object.entries(groupedOrders)
 /* Gắn sự kiện cho nút xóa đơn */
 const handleDeleteOrderButtons = () => {
   selectElements(".btnDeleteOrder").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
       const orderId = button.dataset.id;
       const username = button.dataset.user;
 
@@ -274,7 +275,11 @@ const handleDeleteOrderButtons = () => {
         return;
       }
 
-      const isConfirm = confirm("Bạn có chắc muốn xóa đơn hàng này?");
+      const isConfirm = await showAppConfirm({
+        title: "Xóa đơn hàng",
+        message: "Bạn có chắc muốn xóa đơn hàng này?",
+        confirmText: "Xóa",
+      });
       if (!isConfirm) return;
 
       deleteOrderForAdmin(username, orderId);

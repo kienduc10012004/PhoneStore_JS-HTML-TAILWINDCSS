@@ -1,5 +1,6 @@
 import { API, getCurrentUsername, getElement } from "./core.js";
 import { getImageUrl } from "./ui-flow.js";
+import { showAppConfirm } from "../shared-dialog.js";
 
 /* ================= STATE DANH GIA USER ================= */
 /* ----- Luu san pham hien tai va anh dang preview ----- */
@@ -156,7 +157,15 @@ const renderReviewImagePreview = () => {
     </div>
   `;
 
-  getElement("btnRemoveReviewImage")?.addEventListener("click", () => {
+  getElement("btnRemoveReviewImage")?.addEventListener("click", async () => {
+    const isConfirm = await showAppConfirm({
+      title: "Xóa ảnh",
+      message: "Bạn có chắc muốn xóa ảnh đánh giá đang chọn?",
+      confirmText: "Xóa",
+    });
+
+    if (!isConfirm) return;
+
     currentReviewImage = null;
     const input = getElement("reviewImageInput");
     if (input) input.value = "";

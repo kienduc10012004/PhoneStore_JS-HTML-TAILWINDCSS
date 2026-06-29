@@ -1,9 +1,14 @@
 /* ================= IMPORT MODULES ================= */
 import { API, el, state, luuGioHang, capNhatSoLuongGioHang, checkoutUrl, productDetailUrl, getElement, pageBody } from "./core.js";
 import { formatCurrency, showToast, getImageUrl } from "./ui-flow.js";
+import { showAppConfirm } from "../shared-dialog.js";
 
 const SELECTED_CART_ITEMS_KEY = "KP_CHECKOUT_SELECTED_CART_ITEMS";
 let selectedCartIds = new Set();
+
+const getCartItemKey = (item) => {
+  return String(item.cartId || item.id);
+};
 
 /* ================= MỞ POPUP GIỎ HÀNG ================= */
 const openCart = () => {
@@ -30,13 +35,13 @@ const getCheckoutCartUrl = () => {
 };
 
 const getSelectedCartItems = () => {
-  return state.gioHang.filter((item) => selectedCartIds.has(String(item.id)));
+  return state.gioHang.filter((item) => selectedCartIds.has(getCartItemKey(item)));
 };
 
 const syncSelectedCartIds = () => {
   selectedCartIds = new Set(
     [...selectedCartIds].filter((id) => {
-      return state.gioHang.some((item) => String(item.id) === String(id));
+      return state.gioHang.some((item) => getCartItemKey(item) === String(id));
     })
   );
 };
@@ -59,22 +64,26 @@ window.toggleCartItemSelected = (id) => {
 
 window.toggleAllCartItems = (checked) => {
   selectedCartIds = checked
-    ? new Set(state.gioHang.map((item) => String(item.id)))
+    ? new Set(state.gioHang.map((item) => getCartItemKey(item)))
     : new Set();
 
   renderGioHang(false);
 };
 
-window.xoaSanPhamDaChon = () => {
+window.xoaSanPhamDaChon = async () => {
   if (selectedCartIds.size === 0) {
     alert("Vui lòng tick chọn sản phẩm cần xóa.");
     return;
   }
 
-  const isConfirm = confirm("Bạn có chắc muốn xóa các sản phẩm đã chọn?");
+  const isConfirm = await showAppConfirm({
+    title: "Xóa sản phẩm đã chọn",
+    message: "Bạn có chắc muốn xóa các sản phẩm đã chọn khỏi giỏ hàng?",
+    confirmText: "Xóa",
+  });
   if (!isConfirm) return;
 
-  state.gioHang = state.gioHang.filter((item) => !selectedCartIds.has(String(item.id)));
+  state.gioHang = state.gioHang.filter((item) => !selectedCartIds.has(getCartItemKey(item)));
   selectedCartIds.clear();
 
   luuGioHang();
@@ -87,12 +96,12 @@ window.goToCartProductDetail = (id) => {
 };
 
 /* ================= TĂNG SỐ LƯỢNG SẢN PHẨM ================= */
-window.tangSoLuong = async (id) => {
-  const item = state.gioHang.find(p => p.id == id);
+window.tangSoLuong = async (key) => {
+  const item = state.gioHang.find(p => getCartItemKey(p) === String(key));
   if (!item) return;
 
   try {
-    const response = await fetch(`${API}/${id}`);
+    const response = await fetch(`${API}/${item.id}`);
     const product = await response.json();
     const quantity = getQuantity(product);
 
@@ -114,8 +123,8 @@ window.tangSoLuong = async (id) => {
 };
 
 /* ================= GIẢM SỐ LƯỢNG SẢN PHẨM ================= */
-window.giamSoLuong = (id) => {
-  const item = state.gioHang.find(p => p.id == id);
+window.giamSoLuong = (key) => {
+  const item = state.gioHang.find(p => getCartItemKey(p) === String(key));
 
   if (!item || item.soLuong <= 1) {
     
@@ -130,9 +139,17 @@ window.giamSoLuong = (id) => {
 };
 
 /* ================= XÓA SẢN PHẨM KHỎI GIỎ HÀNG ================= */
-window.xoaSanPham = (id) => {
+window.xoaSanPham = async (key) => {
+  const isConfirm = await showAppConfirm({
+    title: "Xóa sản phẩm",
+    message: "Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?",
+    confirmText: "Xóa",
+  });
+
+  if (!isConfirm) return;
+
   const itemElement =
-    getElement(`cart-item-${id}`);
+    getElement(`cart-item-${key}`);
 
   if (itemElement) {
     itemElement.classList.add("animate-cart-remove");
@@ -140,10 +157,10 @@ window.xoaSanPham = (id) => {
 
   setTimeout(() => {
     state.gioHang = state.gioHang.filter((item) => {
-      return item.id != id;
+      return getCartItemKey(item) !== String(key);
     });
 
-    selectedCartIds.delete(String(id));
+    selectedCartIds.delete(String(key));
     
     luuGioHang();
     renderGioHang();
@@ -263,14 +280,17 @@ export const renderGioHang = (shouldOpen = true) => {
   </div>
 
   <div class="${state.gioHang.length > 3 ? "max-h-[52vh] overflow-y-auto" : ""}">
-  ${state.gioHang.map(item => `
-  <div id="cart-item-${item.id}" class="p-5 flex flex-col justify-center border-b border-slate-300 hover:bg-slate-50 duration-100">
+  ${state.gioHang.map(item => {
+    const itemKey = getCartItemKey(item);
+
+    return `
+  <div id="cart-item-${itemKey}" class="p-5 flex flex-col justify-center border-b border-slate-300 hover:bg-slate-50 duration-100">
     <div class="flex gap-4">
       <input
         type="checkbox"
         class="mt-12 w-4 h-4 accent-blue-600 shrink-0"
-        onchange="toggleCartItemSelected('${item.id}')"
-        ${selectedCartIds.has(String(item.id)) ? "checked" : ""}
+        onchange="toggleCartItemSelected('${itemKey}')"
+        ${selectedCartIds.has(itemKey) ? "checked" : ""}
       />
 
       <div onclick="goToCartProductDetail('${item.id}')" class="w-20 h-20 md:w-30 md:h-30 rounded-2xl mt-10 bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 cursor-pointer">
@@ -289,7 +309,7 @@ export const renderGioHang = (shouldOpen = true) => {
             </p>
           </div>
 
-          <button onclick="xoaSanPham('${item.id}')" class="w-8 h-8 shrink-0 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white font-black cursor-pointer duration-100">
+          <button onclick="xoaSanPham('${itemKey}')" class="w-8 h-8 shrink-0 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white font-black cursor-pointer duration-100">
             X
           </button>
         </div>
@@ -312,7 +332,7 @@ export const renderGioHang = (shouldOpen = true) => {
 
         <div class="flex items-center justify-between mt-4">
           <div class="flex items-center bg-slate-100 rounded-2xl p-1">
-            <button onclick="giamSoLuong('${item.id}')" 
+            <button onclick="giamSoLuong('${itemKey}')" 
               ${item.soLuong <= 1 ? "disabled" : ""}
               class="w-8 h-8 bg-white text-slate-700 rounded-xl font-black cursor-pointer hover:bg-slate-900 hover:text-white duration-100 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-slate-700">
               -
@@ -322,7 +342,7 @@ export const renderGioHang = (shouldOpen = true) => {
               ${item.soLuong}
             </span>
 
-            <button onclick="tangSoLuong('${item.id}')" class="w-8 h-8 bg-blue-600 text-white rounded-xl font-black cursor-pointer hover:bg-blue-700 duration-100">
+            <button onclick="tangSoLuong('${itemKey}')" class="w-8 h-8 bg-blue-600 text-white rounded-xl font-black cursor-pointer hover:bg-blue-700 duration-100">
               +
             </button>
           </div>
@@ -334,7 +354,8 @@ export const renderGioHang = (shouldOpen = true) => {
       </div>
     </div>
   </div>
-`).join("")}
+`;
+  }).join("")}
   </div>
   <span class="mt-5 text-center block text-slate-400 font-bold text-sm">Không còn sản phẩm </span>
   <!-- Tổng thanh toán -->

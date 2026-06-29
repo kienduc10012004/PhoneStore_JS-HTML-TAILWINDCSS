@@ -20,6 +20,7 @@ import {
 } from "./core.js";
 
 import { getImageUrl } from "./ui-flow.js";
+import { showAppConfirm } from "../shared-dialog.js";
 /* ===================Xóa đơn hàng ======================= */
 /* Kiểm tra đơn hàng có được xóa không */
 const canDeleteOrder = (status) => {
@@ -33,13 +34,17 @@ const handleDeleteOrderDetail = () => {
 
   if (!btnDeleteOrderDetail) return;
 
-  btnDeleteOrderDetail.addEventListener("click", () => {
+  btnDeleteOrderDetail.addEventListener("click", async () => {
     if (!currentOrder || !canDeleteOrder(currentOrder.status)) {
       alert("Admin chỉ được xóa đơn hàng đã bị hủy hoặc đã giao");
       return;
     }
 
-    const isConfirm = confirm("Bạn có chắc muốn xóa đơn hàng này?");
+    const isConfirm = await showAppConfirm({
+      title: "Xóa đơn hàng",
+      message: "Bạn có chắc muốn xóa đơn hàng này?",
+      confirmText: "Xóa",
+    });
     if (!isConfirm) return;
 
     deleteOrderForAdmin(username, currentOrder.id);

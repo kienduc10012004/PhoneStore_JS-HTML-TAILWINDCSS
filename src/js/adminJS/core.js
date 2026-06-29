@@ -1,3 +1,5 @@
+import { showAppConfirm } from "../shared-dialog.js";
+
 /* ================= API SẢN PHẨM ================= */
 export const API_URL =
   "https://69f8c3e5f7044aa0103e73e0.mockapi.io/api/v1/productphone";
@@ -155,8 +157,12 @@ export const formatCurrency = (value) => {
 };
 
 /* ================= ĐĂNG XUẤT ADMIN ================= */
-export const logOutAdmin = () => {
-  const confirmLogOut = confirm("Bạn có chắc muốn đăng xuất khỏi Admin?");
+export const logOutAdmin = async () => {
+  const confirmLogOut = await showAppConfirm({
+    title: "Đăng xuất Admin",
+    message: "Bạn có chắc muốn đăng xuất khỏi trang quản trị?",
+    confirmText: "Đăng xuất",
+  });
 
   if (confirmLogOut) {
     localStorage.removeItem("isLoggedIn");
